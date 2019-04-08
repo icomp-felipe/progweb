@@ -1,0 +1,18 @@
+/************************************************
+*           Primeiro Estilo em CSS              *
+*************************************************
+* Autor  : Felipe André Souza da Silva          *
+* e-mail : fass@icomp.ufam.edu.br               *
+* Criação: 05/04/2019                           *
+*************************************************/
+
+p {
+	
+	border: 10px solid black;
+	padding-left: 50px;
+	border-top-left-radius: 16px;
+	border-bottom-right-radius: 16px;
+	border-top-right-radius: 80px;
+	border-bottom-left-radius: 80px;
+	background: #D3D3D3;
+}
