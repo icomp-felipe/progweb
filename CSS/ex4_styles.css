@@ -1,0 +1,36 @@
+/************************************************
+*        Estilos do Exercício 4 em CSS          *
+*************************************************
+* Autor  : Felipe André Souza da Silva          *
+* e-mail : fass@icomp.ufam.edu.br               *
+* Criação: 10/04/2019                           *
+*************************************************/
+
+body {
+	
+	background-image   : url(king_sejong.jpg);
+	background-repeat  : no-repeat;
+	background-position: top;
+	background-size    : 800px;
+	background-color   : #dbbf23;
+
+}
+
+div {
+
+	margin-left: 70px;
+
+	border: 10px solid gold;
+	border-radius: 20px;
+	
+	background-color: rgba(255,255,255,0.9);
+	
+	padding: 10px 15px;
+	
+	width: 530px;
+	
+	box-shadow: 3px 3px gray inset, 3px 3px gray;
+	
+	text-align: center;
+
+}
