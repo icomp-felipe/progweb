@@ -1,0 +1,22 @@
+/************************************************
+*               Tabuada em JS                   *
+*************************************************
+* Autor  : Felipe André Souza da Silva          *
+* e-mail : fass@icomp.ufam.edu.br               *
+* Criação: 17/04/2019                           *
+*************************************************/
+
+/* Definindo estilo de todas as tabelas */
+table {
+
+	float: left;
+	margin-left: 10px;
+
+}
+
+/* Definindo estilo das linhas de cabeçalho da tabela (linhas com colspan) */
+td[colspan="2"] {
+
+	font-weight: bold;
+
+}
