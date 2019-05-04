@@ -66,36 +66,39 @@ class IntegerSet {
 		
 	}
 	
-	// Une a esta classe todos os valores de outro IntegerSet passado via parâmetro
-	uniao(conjunto) {
+	/** Helper que retorna um novo IntegerSet contendo a união de dois conjuntos informados via parâmetro */
+	static uniao(conjunto1,conjunto2) {
 		
-		conjunto.array.forEach( (v,k) => { if (v == true) this.array[k] = true } );
+		let tamanho  = Math.max(conjunto1.getTamanho(),conjunto2.getTamanho());
+		let conjunto = new IntegerSet(tamanho);
 		
+		conjunto1.array.forEach( (v,k) => { if (v == true) conjunto.array[k] = true } );
+		conjunto2.array.forEach( (v,k) => { if (v == true) conjunto.array[k] = true } );
+		
+		return conjunto;
 	}
 	
-	// Remove desta classe todos os valores de outro IntegerSet passado via parâmetro
-	diferenca(conjunto) {
+	/** Helper que retorna um novo IntegerSet contendo a remoção dos elementos de 'conjunto2' de 'conjunto1' */
+	static diferenca(conjunto1,conjunto2) {
 		
-		conjunto.array.forEach( (v,k) => { if (v == true) this.array[k] = false } );
+		let conjunto = new IntegerSet(conjunto1.getTamanho());
 		
+		conjunto1.array.forEach( (v,k) => { if (v == true) conjunto.array[k] = !(conjunto2.array[k] == true) });
+		
+		return conjunto;
 	}
 	
-}
-
-/** Retorna um novo IntegerSet com a interseção dos conjuntos passados via parâmetro */
-function intersecao(conjunto1,conjunto2) {
+	/** Helper que retorna um novo IntegerSet com a interseção dos conjuntos passados via parâmetro */
+	static intersecao(conjunto1,conjunto2) {
 	
-	let tamanho  = maior(conjunto1,conjunto2).getTamanho();
-	let conjunto = new IntegerSet(tamanho);
+		let tamanho  = Math.max(conjunto1.getTamanho(),conjunto2.getTamanho());
+		let conjunto = new IntegerSet(tamanho);
 	
-	conjunto2.array.forEach( (v,k) => { if ((v == true) && (conjunto1.array[k] == true)) conjunto.array[k] = true } );
+		conjunto2.array.forEach( (v,k) => { if ((v == true) && (conjunto1.array[k] == true)) conjunto.array[k] = true } );
 	
-	return conjunto;
-}
-
-/** Retorna o maior dos dois conjuntos passados via parâmetro */
-function maior(conjunto1,conjunto2) {
-	return (conjunto1.getTamanho() > conjunto2.getTamanho()) ? conjunto1 : conjunto2;
+		return conjunto;
+	}
+	
 }
 
 /******************** Parte de Testes *********************************/
@@ -122,16 +125,14 @@ console.log("[i] = " + i.toString());
 console.log("[j] = " + j.toString());
 
 console.log("\n==> Interseção de conjuntos...");
-console.log("[i ∩ j] = " + intersecao(i,j).toString());
+console.log("[i ∩ j] = " + IntegerSet.intersecao(i,j).toString());
 
 console.log("\n==> Removendo número '2' de [j]...");
 j.remove(2);
 console.log("[j] = " + j.toString());
 
 console.log("\n==> União de conjuntos...");
-i.uniao(j);
-console.log("[i ∪ j] = " + i.toString());
+console.log("[i ∪ j] = " + IntegerSet.uniao(i,j).toString());
 
 console.log("\n==> Diferença de conjuntos...");
-i.diferenca(j);
-console.log("[i - j] = " + i.toString());
+console.log("[i - j] = " + IntegerSet.diferenca(i,j).toString());
