@@ -1,3 +1,4 @@
 Linha 04: o comentário em HTML é delimitado pelos caracteres '<!--' e '-->', logo deve-se substituir os caracteres '/*' e '*/' por '<!--' e '-->', respectivamente;
+Linha 08: o atributo 'color' deve ser setado com o operador ':' ao invés de '=';
+Linha 09: o atributo 'background-color' deve ser setado com o operador ':' ao invés de '=';
 Linha 25: a palavra reservada 'that' não cabe nesta linha. Para acessar o conteúdo de 'nome', deve-se utilizar a palavra reservada 'this';
-
