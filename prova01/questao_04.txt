@@ -1,0 +1,20 @@
+O conceito de Hoisting em JavaScript significa literalmente "levar ao topo"
+as declarações de variáveis em seu determinado escopo. Com isto, podemos utilizar
+uma variável sem ao menos declará-la, ou declará-la após a sua utilização. O exemplo
+abaixo ilustra este conceito:
+
+( function () {
+
+	/* Aqui a variável já é conhecida, mas não possui valor.
+	 * Retorno: undefined */
+	console.log(valor);
+	
+	/* Declaração da variável e atribuição do valor 5 */
+	var valor = 5;
+
+	/* Aqui a variável já possui o valor 5
+	 * Retorno: 5 */
+	console.log(valor);
+	
+} )()
+
