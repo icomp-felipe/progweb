@@ -1,4 +1,7 @@
 module.exports = async function (req, res) {
-	// Respond with view.
-	res.view('pages/sobre');
+	
+	var autor = "Felipe André";
+	var lancamento = "2019";
+
+	res.view('pages/sobre', {author: autor},{release_date: lancamento});
 }
