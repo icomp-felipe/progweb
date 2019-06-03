@@ -1,0 +1,66 @@
+.deserto {
+    height: 200px;
+    position: relative;
+}
+
+.chao {
+    height: 16px;
+    background-image: url(sprites.png);
+    background-position-y: -53px;
+    position: absolute;
+    bottom: 0px;
+}
+
+.dino {
+    width: 44px;
+    height: 45px;
+    background-image: url(sprites.png);
+    background-position-y: -3px;
+    position: absolute;
+    z-index: 2;
+}
+
+.nuvem {
+    width: 47px;
+    height: 17px;
+    background-image: url(sprites.png);
+    background-position: -86px 2px;
+    position: absolute;
+    z-index: 1;
+}
+
+.pontuacao_corrente {
+    z-index: 2;
+    height: 15px;
+    width: 69px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.pontuacao_maxima {
+    z-index: 2;
+    height: 15px;
+    width: 69px;
+    position: absolute;
+    top: 10px;
+    right: 70px;
+}
+
+.digito_pontuacao {
+    width: 9px;
+    height: 15px;
+    background-image: url(sprites.png);
+    background-position-y: 0px;
+    position: absolute;
+}
+
+.digito_pontuacao_max {
+    width: 18px;
+    height: 15px;
+    right: 65px;
+    background-image: url(sprites.png);
+    background-position-x: -584px;
+    background-position-y: 0px;
+    position: absolute;
+}
