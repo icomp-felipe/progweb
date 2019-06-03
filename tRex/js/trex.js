@@ -14,6 +14,7 @@
     var div_pontuacao_cur;
     var div_pontuacao_max;
     var div_nuvens_array = [];
+    var div_pterossauros_array = [];
 
     // Controle de execução do jogo
     var game_started = false;
@@ -22,6 +23,12 @@
     // Variável de controle do dia e noite
     var dia = true;
     
+    // Contém as referências dos áudios do jogo
+    var audios = {
+        'tecla'    : document.getElementById("offline-sound-press"),
+        'pontuacao': document.getElementById("offline-sound-reached"),
+        'colidiu'  : document.getElementById("offline-sound-hit")
+    };
 
     var game_frames = 0;
     var chao_width = window.innerWidth;
@@ -33,7 +40,7 @@
         return this.split("").reverse().join("");
     }
 
-    /** Tratamento de eventos de teclado para 'Seta p/ Cima' */
+    /** Tratamento de eventos de pressionamento de teclas */
     addEventListener("keydown", function (event) {
 
         //console.log(event);
@@ -42,19 +49,23 @@
 
             // ...e o jogo ainda não foi iniciado, dou o start e...
             if (!game_started) {
+                div_dino.estado_atual = "pulando_subindo"
                 start_pause();
                 game_started = true;
             }
 
             // ...faço o dinossauro pular
-            if (div_dino.status2 == "correndo_normal")
-                div_dino.status2  = "pulando_subindo";
+            if (div_dino.estado_atual == "correndo_normal") {
+                div_dino.estado_atual  = "pulando_subindo";
+                play_audio(audios.tecla);
+            }
             
         }
 
-        // Quando uma seta pra baixo é pressionada, o dinossauro agacha
+        // Quando uma seta pra baixo é pressionada e o dinossauro está correndo, ele agacha
         else if (event.keyCode == 40) {
-            div_dino.status2 = "correndo_agachado";
+            if (div_dino.estado_atual == "correndo_normal")
+                div_dino.estado_atual = "correndo_agachado";
         }
 
         // Quando a tecla 'p' é pressionada, pauso ou continuo o jogo
@@ -67,12 +78,20 @@
             troca_turno();
         }
 
+        // teste de troca de turno
+        else if (event.key == "c") {
+            controla_colisao();
+        }
+
     });
 
+    /** Tratamento de eventos de liberação/soltura de teclas */
     addEventListener("keyup", function (event) {
 
+        // Se o botão soltado for uma seta pra baixo
         if (event.keyCode == 40)
-            div_dino.status2 = "correndo_normal";
+            if (div_dino.estado_atual == "correndo_agachado")
+                div_dino.estado_atual = "correndo_normal";
 
     });
 
@@ -113,7 +132,7 @@
             var posicao = parseInt(chao.style.backgroundPositionX);
 
             // Reinicio a posição para '2px' do sprint do chão quando o seu final é atingido
-            if (posicao <= -1200)
+            if (posicao <= (chao_width * -1))
                 posicao = -2;
 
             // Retornando a nova posição (deslocada '1px' pra esquerda)
@@ -131,62 +150,107 @@
 
         constructor() {
 
+            // Localização das imagens do dino nos sprites
             this.sprites = {
-                'correr1':'-765px',
-                'correr2':'-809px',
-                'pulando':'-677px',
-                'agachado1': '-940px',
-                'agachado2': "-1000px"
+                'correr_esq'    : {'position': '-765px' , 'width': '44px'},
+                'correr_dir'    : {'position': '-809px' , 'width': '44px'},
+                'agachado_esq'  : {'position': '-941px' , 'width': '58px'},
+                'agachado_dir'  : {'position': '-1000px', 'width': '58px'},
+                'parado_pulando': {'position': '-677px' , 'width': '44px'},
+                'colidido'      : {'position': '-854px' , 'width': '44px'}
             };
 
-            this.frames = 0;
-            this.status2 = "correndo_normal";
+            // Define o estado atual do Dino
+            this.estado_atual = "parado";
 
+            // Define a altura máxima do pulo do Dino
             this.alturaMaxima = "80px";
 
+            // Construção do Dino
             this.element = document.createElement("div");
             this.element.className = "dino";
-            this.element.style.backgroundPositionX = this.sprites.pulando;
             this.element.style.bottom = "0px";
+            this.setSprite(this.sprites.parado_pulando);
 
+            // Adicionano o Dino ao deserto
             div_deserto.element.appendChild(this.element);
 
         }
 
+        /** Define a posição do sprite e sua largura */
+        setSprite(sprite) {
+            this.element.style.backgroundPositionX = sprite.position;
+            this.element.style.width = sprite.width;
+        }
+
+        mata() {
+            this.estado_atual = "colidido";
+            this.setSprite(this.sprites.colidido);
+        }
+
+        /** Implementação da Máquina de Estados dos movimentos do Dino */
         movimentar() {
 
-            switch(this.status2) {
+            var style = this.element.style;
 
+            switch(this.estado_atual) {
+
+                // Define o Dino parado
                 case "parado":
+                    this.setSprite(this.sprites.parado_pulando);
                 break;
 
+                // Define o Dino correndo em pé. Mudo de sprite a cada 30 frames, pra esta mudança poder ser perceptível
                 case "correndo_normal":
                     if (game_frames % 30 == 0)
-                        this.element.style.backgroundPositionX = (this.element.style.backgroundPositionX == this.sprites.correr1)?this.sprites.correr2:this.sprites.correr1;
+                        this.setSprite((style.backgroundPositionX == this.sprites.correr_esq.position) ? this.sprites.correr_dir :this.sprites.correr_esq);
                 break;
 
+                // Define o Dino subindo ao pular
                 case "pulando_subindo":
-                    var bottom =  this.element.style.bottom;
+
+                    // Definindo o sprite
+                    this.setSprite(this.sprites.parado_pulando);
+
+                    // Recuperando a 'altura atual' do Dino em relação ao chão
+                    var bottom = style.bottom;
+
+                    // Se já atingi a altura máxima do pulo, começo a descer...
                     if (bottom == this.alturaMaxima)
-                        this.status2 = "pulando_descendo";
+                        this.estado_atual = "pulando_descendo";
+
+                    // ...senão, continuo subindo
                     else
-                        this.element.style.bottom = (parseInt(bottom) + 1) + "px";
+                        style.bottom = (parseInt(bottom) + 1) + "px";
                 break;
 
+                // Define o Dino descendo ao pular
                 case "pulando_descendo":
-                    var bottom =  this.element.style.bottom;
+
+                    // Definindo o sprite
+                    this.setSprite(this.sprites.parado_pulando);
+
+                    // Recuperando a 'altura atual' do Dino em relação ao chão
+                    var bottom = style.bottom;
+
+                    // Se já atingi o chão, começo novamente a correr...
                     if (bottom == "0px")
-                        this.status2 = "correndo_normal";
+                        this.estado_atual = "correndo_normal";
+                    
+                    // ...senão, continuo descendo
                     else
-                        this.element.style.bottom = (parseInt(bottom) - 1) + "px";
+                        style.bottom = (parseInt(bottom) - 1) + "px";
                 break;
 
+                // Define o Dino correndo agachado. Mudo de sprite a cada 30 frames, pra esta mudança poder ser perceptível
                 case "correndo_agachado":
                     if (game_frames % 30 == 0)
-                        this.element.style.backgroundPositionX = (this.element.style.backgroundPositionX == this.sprites.agachado1)?this.sprites.agachado2:this.sprites.agachado1;
+                        this.setSprite((style.backgroundPositionX == this.sprites.agachado_esq.position) ? this.sprites.agachado_dir : this.sprites.agachado_esq);
                 break;
 
+                // Define o Dino colidido
                 case "colidido":
+                    this.setSprite(this.sprites.colidido);
                 break;
 
             }
@@ -240,6 +304,11 @@
         increase() {
 
             this.pontuacao++;
+
+            // Reproduz o som de pontuação a cada 100 pontos adquiridos
+            if (this.pontuacao % 100 == 0)
+                play_audio(audios.pontuacao);
+
             Pontuacao.displayPoints(this.pontuacao,this.digitos);
 
         }
@@ -271,9 +340,12 @@
             return this.pontuacao;
         }
 
-        /** Seta a pontuação e a exibe */
-        setPontuacao(pontuacao) {
-            this.pontuacao = pontuacao;
+        /** Atualiza a pontuação máxima (se ela for máxima mesmo) */
+        pontuacao_max(pontuacao) {
+
+            if (pontuacao >= this.pontuacao)
+                this.pontuacao = pontuacao;
+
             Pontuacao.displayPoints(this.pontuacao,this.digitos);
         }
 
@@ -303,6 +375,58 @@
         // Move a nuvem '1px' pra esquerda
         mover() {
             this.element.style.right = (parseInt(this.element.style.right) + 1) + "px";
+        }
+
+    }
+
+    /****************************************************************************/
+    /*                            Classe Pterossauro                            */
+    /****************************************************************************/
+    
+    /** Representa os Pterossauros do deserto */
+    class Pterossauro {
+
+        constructor() {
+
+            // Localização das imagens do Pterossauro nos sprites
+            this.sprites = {
+                'ptero_esq': '-134px',
+                'ptero_dir': '-180px'
+            };
+
+            // Construção do Pterossauro
+            this.element = document.createElement("div");
+            this.element.className = "pterossauro";
+            this.element.style.right  = "0px";
+            this.element.style.bottom = Pterossauro.getRandomHeight();
+            this.element.style.backgroundPositionX = this.sprites.ptero_esq;
+
+            // Adicionando o Pterossauro ao deserto
+            div_deserto.element.appendChild(this.element);
+
+        }
+
+        // Move o Pterossauro '1px' pra esquerda
+        mover() {
+
+            var style = this.element.style;
+
+            // Faz o Pterossauro bater as asas a cada 50 frames
+            if (game_frames % 50 == 0)
+                style.backgroundPositionX = (style.backgroundPositionX == this.sprites.ptero_esq) ? this.sprites.ptero_dir : this.sprites.ptero_esq;
+
+            // Desloca o Pterossauro '1px' pra esquerda
+            style.right = (parseInt(style.right) + 1) + "px";
+
+        }
+
+        // Retorna uma altura aleatória para o aparecimento do Pterossauro
+        static getRandomHeight() {
+
+            var alturas = ["5px","25px","50px"];
+
+            return alturas[Math.floor(Math.random() * 3)];
+
         }
 
     }
@@ -432,6 +556,77 @@
 
     }
 
+    /** Função responsável pelo controle de exibição dos Pterossauros */
+    function controla_pterossauros() {
+
+        // Gera um Pterossauro a cada 250 frames
+        if (game_frames % 250 == 0)
+            div_pterossauros_array.push(new Pterossauro());
+
+        // Loop que remove da view os Pterossauros que já ultrapassaram a área de exibição
+        for (var i = (div_pterossauros_array.length - 1); i>=0; --i) {
+
+            if (parseInt(div_pterossauros_array[i].element.style.right) > chao_width) {
+                div_deserto.element.removeChild(div_pterossauros_array[i].element);
+                div_pterossauros_array.splice(i,1);
+            }
+
+        }
+
+        // Loop que movimenta cada Pterossauro do array
+        div_pterossauros_array.forEach(function (pterossauro) {
+            pterossauro.mover();
+        });
+
+    }
+
+    function controla_colisao() {
+
+        div_dino.mata();
+
+        clearInterval(game_loop);
+        clearInterval(turno_loop);
+
+
+
+        
+        var game_over = document.createElement("div");
+        game_over.className = "game_over";
+        game_over.style.left = (parseInt(chao_width) / 2 - 95) + "px";
+
+        div_deserto.element.appendChild(game_over);
+
+
+
+
+        var botao_restart = document.createElement("div");
+        botao_restart.className = "botao_restart";
+        botao_restart.style.left = (parseInt(chao_width) / 2 - 18) + "px";
+
+        botao_restart.onclick = reinicia;
+
+        div_deserto.element.appendChild(botao_restart);
+
+
+
+
+        div_pontuacao_max.pontuacao_max(div_pontuacao_cur.getPontuacao());
+        
+
+
+    }
+
+    function reinicia() {
+
+        console.log("reiniciado!");
+
+    }
+
+    /** Reproduz um áudio do jogo */
+    function play_audio(element) {
+        new Audio(element.src).play();
+    }
+
     /** Inicializa o jogo */
     function init () {
 
@@ -456,6 +651,8 @@
         div_deserto.mover ();
 
         controla_nuvens();
+        controla_pterossauros();
+        //controla_colisao();
 
         controla_pontuacao();
         controla_dificuldade();
