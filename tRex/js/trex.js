@@ -47,14 +47,14 @@
             }
 
             // ...faço o dinossauro pular
-            if (div_dino.status == 0)
-                div_dino.status  = 1;
+            if (div_dino.status2 == "correndo_normal")
+                div_dino.status2  = "pulando_subindo";
             
         }
 
         // Quando uma seta pra baixo é pressionada, o dinossauro agacha
         else if (event.keyCode == 40) {
-            div_dino.status = 3;
+            div_dino.status2 = "correndo_agachado";
         }
 
         // Quando a tecla 'p' é pressionada, pauso ou continuo o jogo
@@ -72,7 +72,7 @@
     addEventListener("keyup", function (event) {
 
         if (event.keyCode == 40)
-            div_dino.status = 0;
+            div_dino.status2 = "correndo_normal";
 
     });
 
@@ -140,8 +140,8 @@
             };
 
             this.frames = 0;
+            this.status2 = "correndo_normal";
 
-            this.status = 0; // 0:correndo; 1:subindo; 2: descendo; 3: agachado
             this.alturaMaxima = "80px";
 
             this.element = document.createElement("div");
@@ -153,34 +153,42 @@
 
         }
 
-        correr() {
+        movimentar() {
 
-            if (this.status == 0) {
+            switch(this.status2) {
 
-                if (this.frames == 30) {
-                    this.element.style.backgroundPositionX = (this.element.style.backgroundPositionX == this.sprites.correr1)?this.sprites.correr2:this.sprites.correr1;
-                    this.frames = 0;
-                }
-                else
-                    this.frames++;
-            }
-            else if (this.status == 1) {
-                this.element.style.backgroundPositionX = this.sprites.pulando;
-                this.element.style.bottom = (parseInt(this.element.style.bottom) + 1) + "px";
-                if (this.element.style.bottom == this.alturaMaxima) this.status = 2;
-            }
-            else if (this.status == 2) {
-                this.element.style.bottom = (parseInt(this.element.style.bottom) - 1) + "px";
-                if (this.element.style.bottom == "0px") this.status = 0;
-            }
-            else if (this.status == 3) {
+                case "parado":
+                break;
 
-                if (this.frames == 30) {
-                    this.element.style.backgroundPositionX = (this.element.style.backgroundPositionX == this.sprites.agachado1)?this.sprites.agachado2:this.sprites.agachado1;
-                    this.frames = 0;
-                }
-                else
-                    this.frames++;
+                case "correndo_normal":
+                    if (game_frames % 30 == 0)
+                        this.element.style.backgroundPositionX = (this.element.style.backgroundPositionX == this.sprites.correr1)?this.sprites.correr2:this.sprites.correr1;
+                break;
+
+                case "pulando_subindo":
+                    var bottom =  this.element.style.bottom;
+                    if (bottom == this.alturaMaxima)
+                        this.status2 = "pulando_descendo";
+                    else
+                        this.element.style.bottom = (parseInt(bottom) + 1) + "px";
+                break;
+
+                case "pulando_descendo":
+                    var bottom =  this.element.style.bottom;
+                    if (bottom == "0px")
+                        this.status2 = "correndo_normal";
+                    else
+                        this.element.style.bottom = (parseInt(bottom) - 1) + "px";
+                break;
+
+                case "correndo_agachado":
+                    if (game_frames % 30 == 0)
+                        this.element.style.backgroundPositionX = (this.element.style.backgroundPositionX == this.sprites.agachado1)?this.sprites.agachado2:this.sprites.agachado1;
+                break;
+
+                case "colidido":
+                break;
+
             }
 
         }
@@ -444,7 +452,7 @@
     /** Loop principal de execução do jogo */
     function run () {
 
-        div_dino   .correr();
+        div_dino   .movimentar();
         div_deserto.mover ();
 
         controla_nuvens();
