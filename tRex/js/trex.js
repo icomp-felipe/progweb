@@ -11,6 +11,7 @@
     // Variáveis dos objetos visuais do jogo
     var div_deserto;
     var div_dino;
+    var div_game_over;
     var div_pontuacao_cur;
     var div_pontuacao_max;
     var div_nuvens_array = [];
@@ -80,7 +81,7 @@
 
         // teste de troca de turno
         else if (event.key == "c") {
-            controla_colisao();
+            encerra_jogo();
         }
 
     });
@@ -123,6 +124,17 @@
         /** Move o chão do deserto de '1px' para a esquerda */
         mover() {
             this.chao.style.backgroundPositionX = Deserto.calcula_posicao(this.chao);
+        }
+
+        /** Remove todos os inimigos e nuvens do deserto */
+        static reset() {
+
+            // Remove todas as nuvens do deserto
+            Nuvem.clearAll();
+
+            // Remove todos os Pterossauros do deserto
+            Pterossauro.clearAll();
+
         }
 
         /** Calcula a posição horizontal do chão */
@@ -183,9 +195,16 @@
             this.element.style.width = sprite.width;
         }
 
+        /** Mata o Dino */
         mata() {
             this.estado_atual = "colidido";
             this.setSprite(this.sprites.colidido);
+        }
+
+        /** Ressuscita o Dino */
+        ressuscita() {
+            this.estado_atual = "parado";
+            this.setSprite(this.sprites.parado_pulando);
         }
 
         /** Implementação da Máquina de Estados dos movimentos do Dino */
@@ -340,6 +359,14 @@
             return this.pontuacao;
         }
 
+        /** Reinicia a pontuação e atualiza a view */
+        reset() {
+
+            this.pontuacao = 0;
+            Pontuacao.displayPoints(this.pontuacao,this.digitos);
+
+        }
+
         /** Atualiza a pontuação máxima (se ela for máxima mesmo) */
         pontuacao_max(pontuacao) {
 
@@ -375,6 +402,16 @@
         // Move a nuvem '1px' pra esquerda
         mover() {
             this.element.style.right = (parseInt(this.element.style.right) + 1) + "px";
+        }
+
+        /** Remove todas as nuvens do deserto */
+        static clearAll() {
+            
+            for (var i = div_nuvens_array.length - 1; i >=0; --i) {
+                div_deserto.element.removeChild(div_nuvens_array[i].element);
+                div_nuvens_array.splice(i,1);
+            }
+
         }
 
     }
@@ -426,6 +463,57 @@
             var alturas = ["5px","25px","50px"];
 
             return alturas[Math.floor(Math.random() * 3)];
+
+        }
+
+        // Remove todos os Pterossauros do deserto
+        static clearAll() {
+
+            for (var i = div_pterossauros_array.length - 1; i >=0; --i) {
+                div_deserto.element.removeChild(div_pterossauros_array[i].element);
+                div_pterossauros_array.splice(i,1);
+            }
+
+        }
+
+    }
+
+    /****************************************************************************/
+    /*                             Classe GameOver                              */
+    /****************************************************************************/
+
+        /** Contém a mensagem de Game Over e o botão de restart */
+    class GameOver {
+
+        constructor() {
+
+            // Aqui crio uma 'div' que encapsula a mensagem e o botão
+            this.element = document.createElement("div");
+
+            // Aqui tento centralizar a div na tela do browser
+            this.element.style.left = (parseInt(chao_width) / 2 - 95) + "px";
+            this.element.className = "game_over_div";
+
+            // Esta div contém apenas a mensagem "Game Over"
+            this.game_over = document.createElement("div");
+            this.game_over.className  = "game_over";
+            this.element.appendChild(this.game_over);
+
+            // Esta outra div contém o botão de restart
+            this.botao_restart = document.createElement("div");
+            this.botao_restart.className = "botao_restart";
+            this.botao_restart.onclick   = reinicia;
+            this.element.appendChild(this.botao_restart);
+
+        }
+
+        /** Controla a visibilidade desta div */
+        setVisible(visibility) {
+
+            if (visibility)
+                div_deserto.element.appendChild(this.element);
+            else
+                div_deserto.element.removeChild(this.element);
 
         }
 
@@ -580,45 +668,42 @@
 
     }
 
-    function controla_colisao() {
+    /** Executa vários procedimentos quando o jogo é encerrado */
+    function encerra_jogo() {
 
+        // Primeiro matamos o Dino
         div_dino.mata();
 
+        // Depois os loops do jogo são encerrados
         clearInterval(game_loop);
         clearInterval(turno_loop);
 
+        // Aqui torno visível a 'div' do Game Over
+        div_game_over.setVisible(true);
 
-
-        
-        var game_over = document.createElement("div");
-        game_over.className = "game_over";
-        game_over.style.left = (parseInt(chao_width) / 2 - 95) + "px";
-
-        div_deserto.element.appendChild(game_over);
-
-
-
-
-        var botao_restart = document.createElement("div");
-        botao_restart.className = "botao_restart";
-        botao_restart.style.left = (parseInt(chao_width) / 2 - 18) + "px";
-
-        botao_restart.onclick = reinicia;
-
-        div_deserto.element.appendChild(botao_restart);
-
-
-
-
+        // Por fim, atualizo a pontuação máxima
         div_pontuacao_max.pontuacao_max(div_pontuacao_cur.getPontuacao());
         
-
-
     }
 
+    /** Prepara o jogo para uma nova rodada */
     function reinicia() {
 
-        console.log("reiniciado!");
+        // Limpa todos os inimigos e nuvens do deserto
+        Deserto.reset();
+
+        // Esconde a 'div' do GameOver
+        div_game_over.setVisible(false);
+
+        // Reinicia o contador de frames
+        game_frames = 0;
+
+        // Reinicia os controladores de execução
+        game_started = false;
+        game_running = false;
+
+        // Reinicia a pontuação
+        div_pontuacao_cur.reset();
 
     }
 
@@ -638,6 +723,9 @@
         div_pontuacao_cur = new Pontuacao("pontuacao_corrente");
         div_pontuacao_max = new Pontuacao("pontuacao_maxima");
         div_pontuacao_max.isMax();
+
+        // Já prepara a div do Game Over
+        div_game_over = new GameOver();
 
         // Inicia o controlador de mudança de turno
         turno_loop = setInterval(controla_turno,1000);

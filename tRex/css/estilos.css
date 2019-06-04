@@ -73,13 +73,20 @@
     position: absolute;
 }
 
+.game_over_div {
+    width: 191px;
+    height: 52px;
+    position: absolute;
+    top: 30px;
+}
+
 .game_over {
     width: 191px;
     height: 12px;
     background-image: url(sprites.png);
     background-position: -484px -15px;
     position: absolute;
-    top: 30px;
+    top: 0px;
 }
 
 .botao_restart {
@@ -88,5 +95,6 @@
     background-image: url(sprites.png);
     background-position: -2px -2px;
     position: absolute;
-    top: 50px;
+    top: 20px;
+    left: 79px;
 }
