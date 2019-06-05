@@ -1,3 +1,11 @@
+/************************************************
+*       Comportamento do Jogo do T-Rex          *
+*************************************************
+* Autor  : Felipe André Souza da Silva          *
+* e-mail : fass@icomp.ufam.edu.br               *
+* Criação: 25/05/2019                           *
+*************************************************/
+
 (function () {
 
     // Variáveis de controle de velocidade dos objetos dinâmicos do jogo
@@ -28,8 +36,8 @@
     // Contém as referências dos áudios do jogo
     var audios = {
         'tecla'    : document.getElementById("offline-sound-press"),
-        'pontuacao': document.getElementById("offline-sound-reached"),
-        'colidiu'  : document.getElementById("offline-sound-hit")
+        'pontuacao': document.getElementById("offline-sound-hit"),
+        'colidiu'  : document.getElementById("offline-sound-reached")
     };
 
     var game_frames = 0;
