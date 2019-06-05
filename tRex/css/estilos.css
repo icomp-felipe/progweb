@@ -37,6 +37,14 @@
     z-index: 1;
 }
 
+.cacto {
+    background-image: url(sprites.png);
+    background-position-y: 0px;
+    position: absolute;
+    bottom: 0px;
+    z-index: 1;
+}
+
 .pontuacao_corrente {
     z-index: 2;
     height: 15px;

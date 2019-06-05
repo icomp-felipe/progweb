@@ -16,6 +16,7 @@
     var div_pontuacao_max;
     var div_nuvens_array = [];
     var div_pterossauros_array = [];
+    var div_cactos_array = [];
 
     // Controle de execução do jogo
     var game_started = false;
@@ -80,6 +81,11 @@
         }
 
         // teste de troca de turno
+        else if (event.key == "n") {
+            new Cacto();
+        }
+
+        // teste de troca de turno
         else if (event.key == "c") {
             encerra_jogo();
         }
@@ -129,10 +135,8 @@
         /** Remove todos os inimigos e nuvens do deserto */
         static reset() {
 
-            // Remove todas as nuvens do deserto
+            Cacto.clearAll();
             Nuvem.clearAll();
-
-            // Remove todos os Pterossauros do deserto
             Pterossauro.clearAll();
 
         }
@@ -479,10 +483,74 @@
     }
 
     /****************************************************************************/
+    /*                               Classe Cacto                               */
+    /****************************************************************************/
+
+    /** Representa os Cactos do deserto */
+    class Cacto {
+
+        constructor() {
+
+            // Localização das imagens do Cacto nos sprites
+            this.sprites = [
+                {'position': '-227px', 'width': '18px', 'height': '40px'},   // 1 pequeno
+                {'position': '-245px', 'width': '34px', 'height': '40px'},   // 2 pequenos
+                {'position': '-279px', 'width': '52px', 'height': '40px'},   // 3 pequenos
+                {'position': '-331px', 'width': '26px', 'height': '53px'},   // 1 grande
+                {'position': '-357px', 'width': '50px', 'height': '53px'},   // 2 grandes
+                {'position': '-407px', 'width': '75px', 'height': '53px'}    // 4 misto
+            ];
+
+            // Construção do Cacto
+            this.element = document.createElement("div");
+            this.element.className    = "cacto";
+            this.element.style.right  = "0px";
+
+            // Constrói um cacto aleatório com base nos sprites
+            this.setRandomSprite();
+
+            // Adicionando o Cacto ao deserto
+            div_deserto.element.appendChild(this.element);
+
+        }
+
+        // Move o Cacto '1px' pra esquerda
+        mover() {
+
+            // Desloca o Pterossauro '1px' pra esquerda
+            this.element.style.right = (parseInt(this.element.style.right) + 1) + "px";
+
+        }
+
+        // Gera um Cacto aleatório com base nos sprites
+        setRandomSprite() {
+
+            var index  = Math.floor(Math.random() * this.sprites.length);
+            var sprite = this.sprites[index];
+
+            this.element.style.width  = sprite.width ;
+            this.element.style.height = sprite.height;
+            this.element.style.backgroundPositionX = sprite.position;
+
+        }
+
+        // Remove todos os Cactos do deserto
+        static clearAll() {
+
+            for (var i = div_cactos_array.length - 1; i >=0; --i) {
+                div_deserto.element.removeChild(div_cactos_array[i].element);
+                div_cactos_array.splice(i,1);
+            }
+
+        }
+
+    }
+
+    /****************************************************************************/
     /*                             Classe GameOver                              */
     /****************************************************************************/
 
-        /** Contém a mensagem de Game Over e o botão de restart */
+    /** Contém a mensagem de Game Over e o botão de restart */
     class GameOver {
 
         constructor() {
@@ -560,7 +628,7 @@
 
         }
 
-    }
+}
 
     /** Muda as cores dos elementos visuais do jogo, dependendo do turno */
     function troca_turno() {
@@ -668,6 +736,30 @@
 
     }
 
+    /** Função responsável pelo controle de exibição dos Cactos */
+    function controla_cactos() {
+
+        // Gera um Cacto a cada 250 frames
+        if (game_frames % 250 == 0)
+            div_cactos_array.push(new Cacto());
+
+        // Loop que remove da view os Cactos que já ultrapassaram a área de exibição
+        for (var i = (div_cactos_array.length - 1); i>=0; --i) {
+
+            if (parseInt(div_cactos_array[i].element.style.right) > chao_width) {
+                div_deserto.element.removeChild(div_cactos_array[i].element);
+                div_cactos_array.splice(i,1);
+            }
+
+        }
+
+        // Loop que movimenta cada Pterossauro do array
+        div_cactos_array.forEach(function (cacto) {
+            cacto.mover();
+        });
+
+    }
+
     /** Executa vários procedimentos quando o jogo é encerrado */
     function encerra_jogo() {
 
@@ -705,6 +797,9 @@
         // Reinicia a pontuação
         div_pontuacao_cur.reset();
 
+        // Ressuscita o Dino
+        div_dino.ressuscita();
+
     }
 
     /** Reproduz um áudio do jogo */
@@ -739,7 +834,8 @@
         div_deserto.mover ();
 
         controla_nuvens();
-        controla_pterossauros();
+        //controla_pterossauros();
+        controla_cactos();
         //controla_colisao();
 
         controla_pontuacao();
