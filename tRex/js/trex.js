@@ -34,11 +34,15 @@
     var dia = true;
     
     // Contém as referências dos áudios do jogo
+    var audio_template = document.getElementById("audios");
+    var audio_files    = audio_template.content.cloneNode(true);
+
     var audios = {
-        'tecla'    : document.getElementById("offline-sound-press"),
-        'pontuacao': document.getElementById("offline-sound-hit"),
-        'colidiu'  : document.getElementById("offline-sound-reached")
+        'tecla'    : audio_files.getElementById("audio-tecla"),
+        'pontuacao': audio_files.getElementById("audio-pontuacao"),
+        'colidiu'  : audio_files.getElementById("audio-colisao")
     };
+
 
     var chao_width;
 
@@ -220,6 +224,7 @@
         /** Ressuscita o Dino */
         ressuscita() {
             this.estado_atual = "parado";
+            this.element.style.bottom = "0px";
             this.setSprite(this.sprites.parado_pulando);
         }
 
@@ -786,6 +791,9 @@
 
         // Primeiro matamos o Dino
         div_dino.mata();
+
+        // Aqui é reproduzido o áudio de colisão
+        play_audio(audios.colidiu);
 
         // Depois os loops do jogo são encerrados
         clearInterval(game_loop);
