@@ -40,8 +40,9 @@
         'colidiu'  : document.getElementById("offline-sound-reached")
     };
 
+    var chao_width;
+
     var game_frames = 0;
-    var chao_width = window.innerWidth;
     var turno_segundos = 0;
 
 
@@ -128,11 +129,14 @@
             // Aqui crio outra 'div' que representa o chão do deserto
             this.chao = document.createElement("div");
             this.chao.className = "chao reversible";
-            this.chao.style.width = chao_width + "px";
             this.chao.style.backgroundPositionX = "0px";
 
             // Note que 'chao' é um elemento do 'deserto'
             this.element.appendChild(this.chao);
+
+            // Aqui seto a variavel que indica a largura do chao
+            chao_width = this.chao.clientWidth;
+            
         }
 
         /** Move o chão do deserto de '1px' para a esquerda */
@@ -565,9 +569,6 @@
 
             // Aqui crio uma 'div' que encapsula a mensagem e o botão
             this.element = document.createElement("div");
-
-            // Aqui tento centralizar a div na tela do browser
-            this.element.style.left = (parseInt(chao_width) / 2 - 95) + "px";
             this.element.className = "game_over_div";
 
             // Esta div contém apenas a mensagem "Game Over"
@@ -768,6 +769,18 @@
 
     }
 
+    function controla_colisao() {
+
+        var dino_rect  = div_dino.element.getBoundingClientRect();
+        var cacto_rect = div_cactos_array[0].element.getBoundingClientRect();
+
+        if (dino_rect.width >= cacto_rect.left)
+            encerra_jogo();
+
+        //console.log(cacto_rect.left);
+
+    }
+
     /** Executa vários procedimentos quando o jogo é encerrado */
     function encerra_jogo() {
 
@@ -844,7 +857,7 @@
         controla_nuvens();
         //controla_pterossauros();
         controla_cactos();
-        //controla_colisao();
+        controla_colisao();
 
         controla_pontuacao();
         controla_dificuldade();

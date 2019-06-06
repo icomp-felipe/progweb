@@ -7,14 +7,21 @@
 *************************************************/
 
 .deserto {
-    height: 200px;
+
+    width   : 100%;
+    height  : 200px;
     position: relative;
+
 }
 
 .chao {
+
+    width : 100%;
     height: 16px;
+
     background-image: url(sprites.png);
     background-position-y: -53px;
+    
     position: absolute;
     bottom: 0px;
 }
@@ -94,9 +101,14 @@
     height: 52px;
     position: absolute;
     top: 30px;
+    left: 45%;
+
+    margin: auto;
+
 }
 
 .game_over {
+
     width: 191px;
     height: 12px;
     background-image: url(sprites.png);
