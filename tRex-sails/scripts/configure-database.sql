@@ -1,0 +1,3 @@
+CREATE DATABASE trex;
+CREATE USER 'trex'@'%' IDENTIFIED BY 'trex123';
+GRANT ALL PRIVILEGES ON trex.* TO 'trex'@'%';
