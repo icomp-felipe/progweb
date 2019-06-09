@@ -6,6 +6,7 @@
 * Criação: 25/05/2019                           *
 *************************************************/
 
+/* Define a posição do deserto, aqui o fiz responsivo */
 .deserto {
 
     width   : 100%;
@@ -14,115 +15,163 @@
 
 }
 
+/* Define a posição do chão do deserto. Este também é responsivo */
 .chao {
 
     width : 100%;
     height: 16px;
 
-    background-image: url(sprites.png);
+    background-image     : url(sprites.png);
     background-position-y: -53px;
     
     position: absolute;
-    bottom: 0px;
+    bottom  : 0px;
+
 }
 
+/* Define a posição do dinossauro, sempre à extrema esquerda do deserto */
 .dino {
+
     height: 45px;
-    background-image: url(sprites.png);
+
+    background-image     : url(sprites.png);
     background-position-y: -3px;
+
     position: absolute;
-    z-index: 2;
+    left    : 0px;
+    z-index : 2;
+
 }
 
+/* Define a aparência das nuvens */
 .nuvem {
-    width: 47px;
+
+    width : 47px;
     height: 17px;
-    background-image: url(sprites.png);
+
+    background-image   : url(sprites.png);
     background-position: -86px 2px;
+
     position: absolute;
     z-index: 1;
+
 }
 
+/* Define a aparência dos Pterossauros (sempre aparecem na frente das nuvens) */
 .pterossauro {
-    width: 44px;
+
+    width : 44px;
     height: 45px;
+
     background-image: url(sprites.png);
     background-position-y: 0px;
+
     position: absolute;
-    z-index: 1;
+    z-index : 2;
+
 }
 
+/* Define a aparência e posição dos cactos */
 .cacto {
-    background-image: url(sprites.png);
+
+    background-image     : url(sprites.png);
     background-position-y: 0px;
+
     position: absolute;
-    bottom: 0px;
-    z-index: 1;
+    bottom  : 0px;
+
 }
 
-.pontuacao_corrente {
-    z-index: 2;
+/* Define o tamanho e configuração geral das pontuações */
+.pontuacao {
+
     height: 15px;
-    width: 69px;
+    width : 69px;
+
     position: absolute;
-    top: 10px;
+    top     : 10px;
+    z-index : 3;
+
+}
+
+/* Define a posição da pontuação corrente */
+.corrente {
     right: 10px;
 }
 
-.pontuacao_maxima {
-    z-index: 2;
-    height: 15px;
-    width: 69px;
-    position: absolute;
-    top: 10px;
+/* Define a posição da pontuação máxima */
+.maxima {
     right: 70px;
 }
 
+/* Define o tamanho e posição vertical no sprite de cada dígito */
 .digito_pontuacao {
-    width: 9px;
+
+    width : 9px;
     height: 15px;
-    background-image: url(sprites.png);
+
+    background-image     : url(sprites.png);
     background-position-y: 0px;
+
     position: absolute;
+
 }
 
+/* Define a posição e aparência do dígito 'HI' (pontuação máxima) */
 .digito_pontuacao_max {
-    width: 18px;
+
+    width : 18px;
     height: 15px;
-    right: 65px;
-    background-image: url(sprites.png);
-    background-position-x: -584px;
-    background-position-y: 0px;
+    right : 65px;
+
+    background-image   : url(sprites.png);
+    background-position: -584px 0px;
+
     position: absolute;
+
 }
 
+/* Define a posição dos elementos da 'div' de game over (texto + botão restart).
+   Componente responsivo */
 .game_over_div {
-    width: 191px;
-    height: 52px;
-    position: absolute;
-    top: 30px;
-    left: 45%;
 
-    margin: auto;
+    width : 191px;
+    height: 52px;
+
+    position: absolute;
+    top     : 30px;
+    left    : 45%;
+
+    margin : auto;
+    z-index: 3;
 
 }
 
+/* Define a posição do texto de game over. Esta 'div' é filha de 'game_over_div' */
 .game_over {
 
-    width: 191px;
+    width : 191px;
     height: 12px;
-    background-image: url(sprites.png);
+
+    background-image   : url(sprites.png);
     background-position: -484px -15px;
+
     position: absolute;
-    top: 0px;
+    top     : 0px;
+
 }
 
+/* Define a posição do botão de restart. Esta 'div' também é filha de 'game_over_div' */
 .botao_restart {
-    width: 36px;
+
+    width : 36px;
     height: 32px;
-    background-image: url(sprites.png);
+
+    background-image   : url(sprites.png);
     background-position: -2px -2px;
+
     position: absolute;
-    top: 20px;
-    left: 79px;
+    top     : 20px;
+    left    : 79px;
+    
 }

@@ -32,83 +32,79 @@
 
     // Variável de controle do dia e noite
     var dia = true;
+
+    // Armazena o tamanho do chão, calculado ao iniciar a aplicação
+    var chao_width;
+
+    // Contadores de frames e de tempo de turno (dia/noite)
+    var game_frames    = 0;
+    var turno_segundos = 0;
     
-    // Contém as referências dos áudios do jogo
+    // Contém os áudios do jogo
     var audio_template = document.getElementById("audios");
     var audio_files    = audio_template.content.cloneNode(true);
 
     var audios = {
-        'tecla'    : audio_files.getElementById("audio-tecla"),
-        'pontuacao': audio_files.getElementById("audio-pontuacao"),
-        'colidiu'  : audio_files.getElementById("audio-colisao")
+        'tecla'    : new Audio(audio_files.getElementById("audio-tecla"    ).src),
+        'pontuacao': new Audio(audio_files.getElementById("audio-pontuacao").src),
+        'colidiu'  : new Audio(audio_files.getElementById("audio-colisao"  ).src)
     };
-
-
-    var chao_width;
-
-    var game_frames = 0;
-    var turno_segundos = 0;
-
 
     /** Inverte uma String */
     String.prototype.reverse = function() {
         return this.split("").reverse().join("");
     }
 
+    /****************************************************************************/
+    /*                         Bloco de EventListeners                          */
+    /****************************************************************************/
+
     /** Tratamento de eventos de pressionamento de teclas */
     addEventListener("keydown", function (event) {
 
         //console.log(event);
-        // Quando uma seta para cima é pressionada...
-        if (event.keyCode == 38) {
+
+        // Quando uma seta para cima ou barra de espaço é pressionada...
+        if (event.keyCode == 38 || event.keyCode == 32) {
 
             // ...e o jogo ainda não foi iniciado, dou o start e...
             if (!game_started) {
+
                 div_dino.estado_atual = "pulando_subindo"
                 start_pause();
                 game_started = true;
+
             }
 
             // ...faço o dinossauro pular
             if (div_dino.estado_atual == "correndo_normal") {
+
                 div_dino.estado_atual  = "pulando_subindo";
                 play_audio(audios.tecla);
+
             }
             
         }
 
         // Quando uma seta pra baixo é pressionada e o dinossauro está correndo, ele agacha
         else if (event.keyCode == 40) {
+
             if (div_dino.estado_atual == "correndo_normal")
                 div_dino.estado_atual = "correndo_agachado";
+
         }
 
         // Quando a tecla 'p' é pressionada, pauso ou continuo o jogo
-        else if (event.keyCode == 80) {
+        else if (event.keyCode == 80)
             start_pause();
-        }
-
-        // teste de troca de turno
-        else if (event.key == "t") {
-            troca_turno();
-        }
-
-        // teste de troca de turno
-        else if (event.key == "n") {
-            new Cacto();
-        }
-
-        // teste de troca de turno
-        else if (event.key == "c") {
-            encerra_jogo();
-        }
 
     });
 
     /** Tratamento de eventos de liberação/soltura de teclas */
     addEventListener("keyup", function (event) {
 
-        // Se o botão soltado for uma seta pra baixo
+        // Se o botão soltado for uma seta pra baixo e o Dino estiver
+        // correndo agachado, faço o Dino correr em pé de novo
         if (event.keyCode == 40)
             if (div_dino.estado_atual == "correndo_agachado")
                 div_dino.estado_atual = "correndo_normal";
@@ -162,10 +158,6 @@
 
             // Lendo a propriedade 'background-position-x' do CSS do 'chao'
             var posicao = parseInt(chao.style.backgroundPositionX);
-
-            // Reinicio a posição para '2px' do sprint do chão quando o seu final é atingido
-            if (posicao <= (chao_width * -1))
-                posicao = -2;
 
             // Retornando a nova posição (deslocada '1px' pra esquerda)
             return (posicao - 1) + "px";
@@ -317,7 +309,7 @@
             this.element = document.createElement("div");
 
             // Dou uma flexibilidade ao nome de classe para diferenciar a pontuação corrente da máxima
-            this.element.className = className;
+            this.element.className = `pontuacao ${className}`;
     
             // Aqui instancio mais 5 'div', uma para cada dígito da pontuação
             for (var i=0; i<5; i++) {
@@ -832,8 +824,8 @@
     }
 
     /** Reproduz um áudio do jogo */
-    function play_audio(element) {
-        new Audio(element.src).play();
+    function play_audio(audio) {
+        audio.play();
     }
 
     /** Inicializa o jogo */
@@ -844,8 +836,8 @@
         div_dino    = new Dino();
 
         // Cria as pontuações
-        div_pontuacao_cur = new Pontuacao("pontuacao_corrente");
-        div_pontuacao_max = new Pontuacao("pontuacao_maxima");
+        div_pontuacao_cur = new Pontuacao("corrente");
+        div_pontuacao_max = new Pontuacao("maxima");
         div_pontuacao_max.isMax();
 
         // Já prepara a div do Game Over
@@ -865,7 +857,7 @@
         controla_nuvens();
         //controla_pterossauros();
         controla_cactos();
-        controla_colisao();
+        //controla_colisao();
 
         controla_pontuacao();
         controla_dificuldade();
