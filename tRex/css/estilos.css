@@ -6,6 +6,14 @@
 * Criação: 25/05/2019                           *
 *************************************************/
 
+/* Faz o body ocupar toda a largura do browser */
+html, body {
+
+    margin: 0px;
+    width : 100%;
+
+}
+
 /* Define a posição do deserto, aqui o fiz responsivo */
 .deserto {
 
@@ -29,7 +37,7 @@
 
 }
 
-/* Define a posição do dinossauro, sempre à extrema esquerda do deserto */
+/* Define a posição do dinossauro, sempre à '15px' da esquerda do deserto */
 .dino {
 
     height: 45px;
@@ -38,7 +46,7 @@
     background-position-y: -3px;
 
     position: absolute;
-    left    : 0px;
+    left    : 15px;
     z-index : 2;
 
 }

@@ -15,15 +15,33 @@
     // Armazena as dificuldades possíveis do jogo
     // [0]: easy  [1]: normal  [2]: medium  [3]: hard  [4]: insane
     var dificuldade = [
-        { 'interval': 9, 'enemy_probability':  15, 'max_score':  200 },
-        { 'interval': 8, 'enemy_probability':  30, 'max_score':  600 },
-        { 'interval': 6, 'enemy_probability':  50, 'max_score': 1500 },
-        { 'interval': 5, 'enemy_probability':  80, 'max_score': 3500 },
-        { 'interval': 4, 'enemy_probability': 100, 'max_score': Infinity }
+        { 'interval': 9, 'obstacle_probability':  15, 'max_score':  200 },  //10k frames
+        { 'interval': 8, 'obstacle_probability':  30, 'max_score':  600 },
+        { 'interval': 6, 'obstacle_probability':  50, 'max_score': 1500 },
+        { 'interval': 5, 'obstacle_probability':  80, 'max_score': 3500 },
+        { 'interval': 4, 'obstacle_probability': 100, 'max_score': Infinity }
     ];
 
     // Armazena a dificuldade atual do jogo
     var dificuldade_atual = dificuldade[0];
+
+    /** Função responsável pelo controle de dificuldade do jogo */
+    function controla_dificuldade() {
+
+        // Se a pontuação máxima para a dificuldade atual já foi atingida...
+        if (div_pontuacao_cur.getPontuacao() > dificuldade_atual.max_score) {
+    
+            // ...aumento a dificuldade
+            var cur_index = dificuldade.findIndex(node => node.max_score === dificuldade_atual.max_score);
+            dificuldade_atual = dificuldade[cur_index + 1];
+    
+            // ...e atualizo a velocidade do jogo
+            clearInterval(game_loop);
+            game_loop = setInterval(run,dificuldade_atual.interval);
+    
+        }
+    
+    }
 
     // Variáveis de controle dos loops do jogo
     var game_loop;
@@ -75,37 +93,13 @@
     /** Tratamento de eventos de pressionamento de teclas */
     addEventListener("keydown", function (event) {
 
-        //console.log(event);
-
         // Quando uma seta para cima ou barra de espaço é pressionada...
-        if (event.keyCode == 38 || event.keyCode == 32) {
-
-            // ...e o jogo ainda não foi iniciado, dou o start e...
-            if (!game_started) {
-
-                div_dino.estado_atual = "pulando_subindo"
-                start_pause();
-                game_started = true;
-
-            }
-
-            // ...faço o dinossauro pular
-            if (div_dino.estado_atual == "correndo_normal") {
-
-                div_dino.estado_atual  = "pulando_subindo";
-                play_audio(audios.tecla);
-
-            }
-            
-        }
+        if (event.keyCode == 38 || event.keyCode == 32)
+            event_start_jump();
 
         // Quando uma seta pra baixo é pressionada e o dinossauro está correndo, ele agacha
-        else if (event.keyCode == 40) {
-
-            if (div_dino.estado_atual == "correndo_normal")
-                div_dino.estado_atual = "correndo_agachado";
-
-        }
+        else if (event.keyCode == 40)
+            event_dino_squat();
 
         // Quando a tecla 'p' é pressionada, pauso ou continuo o jogo
         else if (event.keyCode == 80)
@@ -119,10 +113,99 @@
         // Se o botão soltado for uma seta pra baixo e o Dino estiver
         // correndo agachado, faço o Dino correr em pé de novo
         if (event.keyCode == 40)
-            if (div_dino.estado_atual == "correndo_agachado")
-                div_dino.estado_atual = "correndo_normal";
+            event_dino_raise();
 
     });
+
+    var x_down = null;
+    var y_down = null;
+
+    /** Tratamento de eventos de touchscreen e trackpad.
+     *  Captura a posição do primeiro evento de touch.   */
+    document.addEventListener("touchstart", function(event) {
+
+        event.preventDefault ();
+        event.stopPropagation();
+
+        x_down = event.touches[0].clientX;
+        y_down = event.touches[0].clientY;
+
+    });
+
+    /** Tratamento de eventos de touchscreen e trackpad.
+     *  Captura eventos de deslize para cima e para baixo. */
+    document.addEventListener("touchmove", function(event) {
+
+        // Se não ocorreu nenhum evento, pego minha bike e vou embora!
+        if (!x_down || !y_down)
+            return;
+        
+        // Capturando a nova posição do touch
+        var x_up = event.touches[0].clientX;
+        var y_up = event.touches[0].clientY;
+
+        // Calculando o espaço percorrido
+        var x_diff = (x_down - x_up);
+        var y_diff = (y_down - y_up);
+
+        // Se realizei algum deslocamento vertical...
+        if (Math.abs(x_diff) <= Math.abs(y_diff)) {
+
+            // ...para cima, inicio o jogo e faço o Dino pular ou levantar (caso esteja agachado)
+            if (y_diff > 0) {
+                event_start_jump();
+                event_dino_raise();
+            }
+
+            // ...para baixo, faço o Dino agachar
+            else
+                event_dino_squat();
+            
+            // Resetando as variáveis de posição
+            x_down = null;
+            y_down = null;
+
+        }
+
+    });
+
+    /** Função executada quando o jogo inicia ou quando o Dino deve pular */
+    function event_start_jump() {
+
+        // ...e o jogo ainda não foi iniciado, dou o start e...
+        if (!game_started) {
+
+            div_dino.estado_atual = "pulando_subindo"
+            start_pause();
+            game_started = true;
+
+        }
+
+        // ...faço o dinossauro pular
+        if (div_dino.estado_atual == "correndo_normal") {
+
+            div_dino.estado_atual  = "pulando_subindo";
+            play_audio(audios.tecla);
+
+        }
+
+    }
+
+    /** Função executada quando o jogo inicia ou quando o Dino deve agachar */
+    function event_dino_squat() {
+
+        if (div_dino.estado_atual == "correndo_normal")
+            div_dino.estado_atual = "correndo_agachado";
+
+    }
+
+    /** Função executada quando o jogo inicia ou quando o Dino deve levantar */
+    function event_dino_raise() {
+
+        if (div_dino.estado_atual == "correndo_agachado")
+            div_dino.estado_atual = "correndo_normal";
+
+    }
 
     /****************************************************************************/
     /*                             Classe Deserto                               */
@@ -201,7 +284,8 @@
             this.estado_atual = "parado";
 
             // Define a altura máxima do pulo do Dino
-            this.alturaMaxima = "80px";
+            this.alturaMaxima = "86px";
+            this.pode_descer  = 0;
 
             // Construção do Dino
             this.element = document.createElement("div");
@@ -260,13 +344,21 @@
                     // Recuperando a 'altura atual' do Dino em relação ao chão
                     var bottom = style.bottom;
 
-                    // Se já atingi a altura máxima do pulo, começo a descer...
+                    // Se já atingi a altura máxima do pulo, espero um pouquinho lá em cima e começo a descer...
                     if (bottom == this.alturaMaxima)
-                        this.estado_atual = "pulando_descendo";
+
+                        if (this.pode_descer == 6) {
+                            this.estado_atual = "pulando_descendo";
+                            this.pode_descer  = 0;
+                        }
+
+                        else
+                            this.pode_descer++;
 
                     // ...senão, continuo subindo
                     else
                         style.bottom = (parseInt(bottom) + pixels_to_move) + "px";
+
                 break;
 
                 // Define o Dino descendo ao pular
@@ -307,7 +399,6 @@
     /****************************************************************************/
     /*                             Classe Pontuacao                             */
     /****************************************************************************/
-
     class Pontuacao {
 
         constructor(className) {
@@ -350,11 +441,18 @@
 
             this.pontuacao++;
 
-            // Reproduz o som de pontuação a cada 100 pontos adquiridos
-            if (this.pontuacao % 100 == 0)
-                play_audio(audios.pontuacao);
+            // Atualiza a pontuação da tela quando este componente não está 'piscando'
+            if (blink_times == 0)
+                Pontuacao.displayPoints(this.pontuacao,this.digitos);
 
-            Pontuacao.displayPoints(this.pontuacao,this.digitos);
+            // Reproduz o som de pontuação a cada 100 pontos adquiridos e faz a 'div' de pontuação piscar 4x
+            if (this.pontuacao % 100 == 0) {
+
+                play_audio(audios.pontuacao);
+                blink_pontuacao();
+                blink_interval = setInterval(blink_pontuacao,350);
+
+            }
 
         }
 
@@ -401,6 +499,35 @@
 
             Pontuacao.displayPoints(this.pontuacao,this.digitos);
         }
+
+    }
+
+    var blink_times = 0;
+    var blink_interval = null;
+
+    /** Controla o piscar da 'div' de pontuação atual */
+    function blink_pontuacao() {
+
+        var style = document.querySelector(".corrente").style;
+
+        // Piscando a 'div'
+        if (style.visibility == "visible")
+            style.visibility = "hidden";
+        else
+            style.visibility = "visible";
+        
+        // Controlando o tempo máximo de piscadas
+        if (blink_times == 8) {
+
+            style.visibility = "visible";
+            blink_times      = 0;
+
+            clearInterval(blink_interval);
+            blink_interval = null;
+
+        }
+        else
+            blink_times++;
 
     }
 
@@ -608,7 +735,7 @@
 
     /****************************************************************************/
     /*                             Bloco de Funções                             */
-    /****************************************************************************/ 
+    /****************************************************************************/
 
     /** Pausa ou continua a execução do jogo, dependendo de seu estado atual */
     function start_pause() {
@@ -691,24 +818,6 @@
         // A cada 30 frames incremento a pontuação
         if (game_frames % 30 == 0)
             div_pontuacao_cur.increase();
-
-    }
-
-    /** Função responsável pelo controle de dificuldade do jogo */
-    function controla_dificuldade() {
-
-        // Se a pontuação máxima para a dificuldade atual já foi atingida...
-        if (div_pontuacao_cur.getPontuacao() > dificuldade_atual.max_score) {
-
-            // ...aumento a dificuldade
-            var cur_index = dificuldade.findIndex(node => node.max_score === dificuldade_atual.max_score);
-            dificuldade_atual = dificuldade[cur_index + 1];
-
-            // ...e atualizo a velocidade do jogo
-            clearInterval(game_loop);
-            game_loop = setInterval(run,dificuldade_atual.interval);
-
-        }
 
     }
 
@@ -803,7 +912,7 @@
         if (game_frames % 250 == 0) {
 
             // ...calculo a probabilidade de surgir um obstáculo no deserto e...
-            if (Math.floor(Math.random() * 100) <= dificuldade_atual.enemy_probability) {
+            if (Math.floor(Math.random() * 100) <= dificuldade_atual.obstacle_probability) {
 
                 // ...escolho com probabilidade de 50% entre Pterossauro ou Cacto
                 if (Math.random() >= 0.5)
