@@ -9,8 +9,21 @@
 (function () {
 
     // Variáveis de controle de velocidade dos objetos dinâmicos do jogo
-    const FPS = 300;
-    const PROB_NUVEM = 3;
+    const PROB_NUVEM   = 3;
+    const pixels_to_move = 2;
+
+    // Armazena as dificuldades possíveis do jogo
+    // [0]: easy  [1]: normal  [2]: medium  [3]: hard  [4]: insane
+    var dificuldade = [
+        { 'interval': 9, 'enemy_probability':  15, 'max_score':  200 },
+        { 'interval': 8, 'enemy_probability':  30, 'max_score':  600 },
+        { 'interval': 6, 'enemy_probability':  50, 'max_score': 1500 },
+        { 'interval': 5, 'enemy_probability':  80, 'max_score': 3500 },
+        { 'interval': 4, 'enemy_probability': 100, 'max_score': Infinity }
+    ];
+
+    // Armazena a dificuldade atual do jogo
+    var dificuldade_atual = dificuldade[0];
 
     // Variáveis de controle dos loops do jogo
     var game_loop;
@@ -160,7 +173,7 @@
             var posicao = parseInt(chao.style.backgroundPositionX);
 
             // Retornando a nova posição (deslocada '1px' pra esquerda)
-            return (posicao - 1) + "px";
+            return (posicao - pixels_to_move) + "px";
         }
 
     }
@@ -253,7 +266,7 @@
 
                     // ...senão, continuo subindo
                     else
-                        style.bottom = (parseInt(bottom) + 1) + "px";
+                        style.bottom = (parseInt(bottom) + pixels_to_move) + "px";
                 break;
 
                 // Define o Dino descendo ao pular
@@ -271,7 +284,7 @@
                     
                     // ...senão, continuo descendo
                     else
-                        style.bottom = (parseInt(bottom) - 1) + "px";
+                        style.bottom = (parseInt(bottom) - pixels_to_move) + "px";
                 break;
 
                 // Define o Dino correndo agachado. Mudo de sprite a cada 30 frames, pra esta mudança poder ser perceptível
@@ -414,7 +427,7 @@
 
         // Move a nuvem '1px' pra esquerda
         mover() {
-            this.element.style.right = (parseInt(this.element.style.right) + 1) + "px";
+            this.element.style.right = (parseInt(this.element.style.right) + pixels_to_move) + "px";
         }
 
         /** Remove todas as nuvens do deserto */
@@ -466,7 +479,7 @@
                 style.backgroundPositionX = (style.backgroundPositionX == this.sprites.ptero_esq) ? this.sprites.ptero_dir : this.sprites.ptero_esq;
 
             // Desloca o Pterossauro '1px' pra esquerda
-            style.right = (parseInt(style.right) + 1) + "px";
+            style.right = (parseInt(style.right) + pixels_to_move) + "px";
 
         }
 
@@ -527,7 +540,7 @@
         mover() {
 
             // Desloca o Pterossauro '1px' pra esquerda
-            this.element.style.right = (parseInt(this.element.style.right) + 1) + "px";
+            this.element.style.right = (parseInt(this.element.style.right) + pixels_to_move) + "px";
 
         }
 
@@ -608,7 +621,7 @@
 
         // ...caso contrário, continuo sua execução
         else {
-            game_loop = setInterval(run, 1000/FPS);
+            game_loop = setInterval(run,dificuldade_atual.interval);
             game_running = true;
         }
 
@@ -684,8 +697,16 @@
     /** Função responsável pelo controle de dificuldade do jogo */
     function controla_dificuldade() {
 
-        // A cada 1000 frames a velocidade do...
-        if (game_frames % 1000 == 0) {
+        // Se a pontuação máxima para a dificuldade atual já foi atingida...
+        if (div_pontuacao_cur.getPontuacao() > dificuldade_atual.max_score) {
+
+            // ...aumento a dificuldade
+            var cur_index = dificuldade.findIndex(node => node.max_score === dificuldade_atual.max_score);
+            dificuldade_atual = dificuldade[cur_index + 1];
+
+            // ...e atualizo a velocidade do jogo
+            clearInterval(game_loop);
+            game_loop = setInterval(run,dificuldade_atual.interval);
 
         }
 
@@ -719,11 +740,7 @@
     }
 
     /** Função responsável pelo controle de exibição dos Pterossauros */
-    function controla_pterossauros() {
-
-        // Gera um Pterossauro a cada 250 frames
-        if (game_frames % 250 == 0)
-            div_pterossauros_array.push(new Pterossauro());
+    function movimenta_pterossauros() {
 
         // Loop que remove da view os Pterossauros que já ultrapassaram a área de exibição
         for (var i = (div_pterossauros_array.length - 1); i>=0; --i) {
@@ -743,11 +760,7 @@
     }
 
     /** Função responsável pelo controle de exibição dos Cactos */
-    function controla_cactos() {
-
-        // Gera um Cacto a cada 250 frames
-        if (game_frames % 250 == 0)
-            div_cactos_array.push(new Cacto());
+    function movimenta_cactos() {
 
         // Loop que remove da view os Cactos que já ultrapassaram a área de exibição
         for (var i = (div_cactos_array.length - 1); i>=0; --i) {
@@ -766,6 +779,11 @@
 
     }
 
+    function movimenta_obstaculos() {
+        movimenta_cactos();
+        movimenta_pterossauros();
+    }
+
     function controla_colisao() {
 
         var dino_rect  = div_dino.element.getBoundingClientRect();
@@ -775,6 +793,27 @@
             encerra_jogo();
 
         //console.log(cacto_rect.left);
+
+    }
+
+    /** Responsável por gerar obstáculos no deserto de acordo com a dificuldade atual do jogo */
+    function gerador_obstaculos() {
+
+        // A cada 250 frames (espaço mínimo definido entre aparições de obstáculos)...
+        if (game_frames % 250 == 0) {
+
+            // ...calculo a probabilidade de surgir um obstáculo no deserto e...
+            if (Math.floor(Math.random() * 100) <= dificuldade_atual.enemy_probability) {
+
+                // ...escolho com probabilidade de 50% entre Pterossauro ou Cacto
+                if (Math.random() >= 0.5)
+                    div_pterossauros_array.push(new Pterossauro());
+                else
+                    div_cactos_array.push(new Cacto());
+
+            }      
+
+        }
 
     }
 
@@ -821,6 +860,9 @@
         // Ressuscita o Dino
         div_dino.ressuscita();
 
+        // Reinicia a dificuldade do jogo
+        dificuldade_atual = dificuldade.easy;
+
     }
 
     /** Reproduz um áudio do jogo */
@@ -855,14 +897,14 @@
         div_deserto.mover ();
 
         controla_nuvens();
-        //controla_pterossauros();
-        controla_cactos();
-        //controla_colisao();
+
+        gerador_obstaculos();
+        movimenta_obstaculos();
 
         controla_pontuacao();
         controla_dificuldade();
 
-        game_frames++;
+        game_frames += pixels_to_move;
 
     }
 
