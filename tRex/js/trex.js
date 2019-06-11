@@ -893,15 +893,37 @@
         movimenta_pterossauros();
     }
 
-    function controla_colisao() {
+    /** Verifica se houve colisão entre o dino e o cacto mais à esquerda do deserto */
+    function colidiu_com_cacto(dino_rect) {
 
-        var dino_rect  = div_dino.element.getBoundingClientRect();
+        if (div_cactos_array.length == 0)
+            return false;
+
         var cacto_rect = div_cactos_array[0].element.getBoundingClientRect();
 
-        if (dino_rect.width >= cacto_rect.left)
-            encerra_jogo();
+        return (( dino_rect.right >= cacto_rect.left ) && ( dino_rect.bottom >= cacto_rect.top ) && ( dino_rect.left <= cacto_rect.right ));
 
-        //console.log(cacto_rect.left);
+    }
+
+    /** Verifica se houve colisão entre o dino e o pterossauro mais à esquerda do deserto */
+    function colidiu_com_pterossauro(dino_rect) {
+
+        if (div_pterossauros_array.length == 0)
+            return false;
+
+        var pterossauro_rect = div_pterossauros_array[0].element.getBoundingClientRect();
+
+        return (( dino_rect.right >= pterossauro_rect.left ) && ( dino_rect.bottom >= pterossauro_rect.top ) && ( dino_rect.top <= pterossauro_rect.bottom ));
+
+    }
+
+    /** Verifica se o Dino colidiu com algum obstáculo do deserto */
+    function controla_colisao() {
+
+        var dino  = div_dino.element.getBoundingClientRect();
+
+        if (colidiu_com_cacto(dino) || colidiu_com_pterossauro(dino))
+            encerra_jogo();
 
     }
 
@@ -970,7 +992,7 @@
         div_dino.ressuscita();
 
         // Reinicia a dificuldade do jogo
-        dificuldade_atual = dificuldade.easy;
+        dificuldade_atual = dificuldade[0];
 
     }
 
@@ -1012,6 +1034,8 @@
 
         controla_pontuacao();
         controla_dificuldade();
+
+        controla_colisao();
 
         game_frames += pixels_to_move;
 
