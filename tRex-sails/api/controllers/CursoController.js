@@ -12,6 +12,7 @@ module.exports = {
         var cursos = await Curso.find();
 
         res.view('curso/index', {cursos:cursos});
+
     },
 
     create: async function (req,res) {},
