@@ -1,0 +1,37 @@
+<div id="curso" class="container mt-4">
+    <div class="row">
+        <div class="col-sm">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Cursos</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <h2>Criando um novo curso</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <form action='/curso/create' method="POST">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Nome do Curso</label>
+                    <input type="text" class="form-control" id="input_nome">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Sigla</label>
+                    <input type="text" class="form-control" id="input_sigla">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Descrição</label>
+                    <textarea class="form-control" id="input_descricao" rows="3"></textarea>
+                </div>
+                <input type="hidden" name="_csrf" value="<%= _csrf %>">
+                <button type="submit" class="btn btn-primary">Cadastrar</button>
+            </form>
+        </div>
+    </div>
+</div>

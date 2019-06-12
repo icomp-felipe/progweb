@@ -1,45 +1,45 @@
 <div id="curso" class="container mt-4">
-        <div class="row">
-          <div class="col-sm">
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Cursos</li>
-              </ol>
-            </nav>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm">
-            <h2>Cursos da UFAM <a class="btn btn-dark" href="/curso/create" role="button">+</a></h2>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Sigla</th>
-                  <th scope="col">Nome</th>
-                  <th scope="col">Acões</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% cursos.forEach(function(curso) { %>
-                <tr>
-                  <th scope="row"><%= curso.id %></th>
-                  <td><%= curso.sigla %></td>
-                  <td><%= curso.nome %></td>
-                  <td>
-                    <a href="/curso/read/<%= curso.id %>"><i class="fa fa-eye" aria-hidden="true"></i></a>
-                    <a href="/curso/update/<%= curso.id %>"><i class="fa fa-pencil" aria-hidden="true"></i></a>
-                    <a href="/curso/delete/<%= curso.id %>"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                  </td>
-                </tr>
-                <% }) %>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+  <div class="row">
+    <div class="col-sm">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Cursos</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm">
+      <h2>Cursos da UFAM <a class="btn btn-dark" href="/curso/create" role="button">+</a></h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Sigla</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% cursos.forEach(function(curso) { %>
+          <tr>
+            <th scope="row"><%= curso.id %></th>
+            <td><%= curso.sigla %></td>
+            <td><%= curso.nome %></td>
+            <td>
+              <a href="/curso/read/<%= curso.id %>"><i class="fa fa-eye" aria-hidden="true"></i></a>
+              <a href="/curso/update/<%= curso.id %>"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+              <a href="/curso/delete/<%= curso.id %>"><i class="fa fa-trash" aria-hidden="true"></i></a>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

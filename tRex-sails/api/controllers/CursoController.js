@@ -15,7 +15,13 @@ module.exports = {
 
     },
 
-    create: async function (req,res) {},
+    create: async function (req,res) {
+
+        console.log(res);
+
+        res.view('curso/create');
+
+    },
 
     read: async function (req,res) {
         res.end(req.param("cursoId"));
