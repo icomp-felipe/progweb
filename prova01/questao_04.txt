@@ -1,3 +1,7 @@
+David: Hoisting definido corretamente. Código de exemplo correto.
+Obs: Hoisting vale para as funções também.
+Nota: 2.0
+
 O conceito de Hoisting em JavaScript significa literalmente "levar ao topo"
 as declarações de variáveis em seu determinado escopo. Com isto, podemos utilizar
 uma variável sem ao menos declará-la, ou declará-la após a sua utilização. O exemplo
