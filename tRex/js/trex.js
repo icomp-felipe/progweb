@@ -10,16 +10,19 @@
 
     // Variáveis de controle de velocidade dos objetos dinâmicos do jogo
     const PROB_NUVEM   = 3;
-    const pixels_to_move = 2;
+    var pixels_to_move = 0.5;
+
+    // Velocidade máxima de movimentação é de 3 pixels a cada ms
+    var velocidade_max = 3.0;
 
     // Armazena as dificuldades possíveis do jogo
     // [0]: easy  [1]: normal  [2]: medium  [3]: hard  [4]: insane
     var dificuldade = [
-        { 'interval': 9, 'obstacle_probability':  15, 'max_score':  200 },  //10k frames
-        { 'interval': 8, 'obstacle_probability':  30, 'max_score':  600 },
-        { 'interval': 6, 'obstacle_probability':  50, 'max_score': 1500 },
-        { 'interval': 5, 'obstacle_probability':  80, 'max_score': 3500 },
-        { 'interval': 4, 'obstacle_probability': 100, 'max_score': Infinity }
+        { 'obstacle_probability':  15, 'max_score':  200 },  //10k frames
+        { 'obstacle_probability':  30, 'max_score':  600 },
+        { 'obstacle_probability':  50, 'max_score': 1500 },
+        { 'obstacle_probability':  80, 'max_score': 3500 },
+        { 'obstacle_probability': 100, 'max_score': Infinity }
     ];
 
     // Armazena a dificuldade atual do jogo
@@ -35,10 +38,12 @@
             var cur_index = dificuldade.findIndex(node => node.max_score === dificuldade_atual.max_score);
             dificuldade_atual = dificuldade[cur_index + 1];
     
-            // ...e atualizo a velocidade do jogo
-            clearInterval(game_loop);
-            game_loop = setInterval(run,dificuldade_atual.interval);
-    
+        }
+
+        // Aumenta a velocidade do Dino de 0.5px a cada 1000 frames passados
+        if ((game_frames_veloc >= 1000) && (pixels_to_move <= velocidade_max)) {
+            pixels_to_move += 0.05;
+            game_frames_veloc = 0.0;
         }
     
     }
@@ -68,8 +73,10 @@
     var chao_width;
 
     // Contadores de frames e de tempo de turno (dia/noite)
-    var game_frames    = 0;
-    var turno_segundos = 0;
+    var game_frames       = 0;
+    var game_frames_pont  = 0.0;
+    var game_frames_veloc = 0.0;
+    var turno_segundos    = 0;
     
     // Contém os áudios do jogo
     var audio_template = document.getElementById("audios");
@@ -208,6 +215,70 @@
     }
 
     /****************************************************************************/
+    /*                               Classe Cacto                               */
+    /****************************************************************************/
+
+    /** Representa os Cactos do deserto */
+    class Cacto {
+
+        constructor() {
+
+            // Localização das imagens do Cacto nos sprites
+            this.sprites = [
+                {'position': '-227px', 'width': '18px', 'height': '40px'},   // 1 pequeno
+                {'position': '-245px', 'width': '34px', 'height': '40px'},   // 2 pequenos
+                {'position': '-279px', 'width': '52px', 'height': '40px'},   // 3 pequenos
+                {'position': '-331px', 'width': '26px', 'height': '53px'},   // 1 grande
+                {'position': '-357px', 'width': '50px', 'height': '53px'},   // 2 grandes
+                {'position': '-407px', 'width': '75px', 'height': '53px'}    // 4 misto
+            ];
+
+            // Construção do Cacto
+            this.element = document.createElement("div");
+            this.element.className    = "cacto";
+            this.element.style.right  = "0px";
+
+            // Constrói um cacto aleatório com base nos sprites
+            this.setRandomSprite();
+
+            // Adicionando o Cacto ao deserto
+            div_deserto.element.appendChild(this.element);
+
+        }
+
+        // Move o Cacto '1px' pra esquerda
+        mover() {
+
+            // Desloca o Pterossauro '1px' pra esquerda
+            this.element.style.right = (parseFloat(this.element.style.right) + pixels_to_move) + "px";
+
+        }
+
+        // Gera um Cacto aleatório com base nos sprites
+        setRandomSprite() {
+
+            var index  = Math.floor(Math.random() * this.sprites.length);
+            var sprite = this.sprites[index];
+
+            this.element.style.width  = sprite.width ;
+            this.element.style.height = sprite.height;
+            this.element.style.backgroundPositionX = sprite.position;
+
+        }
+
+        // Remove todos os Cactos do deserto
+        static clearAll() {
+
+            for (var i = div_cactos_array.length - 1; i >=0; --i) {
+                div_deserto.element.removeChild(div_cactos_array[i].element);
+                div_cactos_array.splice(i,1);
+            }
+
+        }
+
+    }
+
+    /****************************************************************************/
     /*                             Classe Deserto                               */
     /****************************************************************************/
 
@@ -253,9 +324,9 @@
         static calcula_posicao(chao) {
 
             // Lendo a propriedade 'background-position-x' do CSS do 'chao'
-            var posicao = parseInt(chao.style.backgroundPositionX);
+            var posicao = parseFloat(chao.style.backgroundPositionX);
 
-            // Retornando a nova posição (deslocada '1px' pra esquerda)
+            // Retornando a nova posição (deslocada 'pixels_to_move'px pra esquerda)
             return (posicao - pixels_to_move) + "px";
         }
 
@@ -284,7 +355,7 @@
             this.estado_atual = "parado";
 
             // Define a altura máxima do pulo do Dino
-            this.alturaMaxima = "86px";
+            this.alturaMaxima = 86;
             this.pode_descer  = 0;
 
             // Construção do Dino
@@ -348,7 +419,7 @@
                     var bottom = style.bottom;
 
                     // Se já atingi a altura máxima do pulo, espero um pouquinho lá em cima e começo a descer...
-                    if (bottom == this.alturaMaxima)
+                    if (parseFloat(bottom) >= this.alturaMaxima)
 
                         if (this.pode_descer == 6) {
                             this.estado_atual = "pulando_descendo";
@@ -360,7 +431,7 @@
 
                     // ...senão, continuo subindo
                     else
-                        style.bottom = (parseInt(bottom) + pixels_to_move) + "px";
+                        style.bottom = (parseFloat(bottom) + pixels_to_move) + "px";
 
                 break;
 
@@ -374,12 +445,12 @@
                     var bottom = style.bottom;
 
                     // Se já atingi o chão, começo novamente a correr...
-                    if (bottom == "0px")
+                    if (parseFloat(bottom) <= 0)
                         this.estado_atual = "correndo_normal";
                     
                     // ...senão, continuo descendo
                     else
-                        style.bottom = (parseInt(bottom) - pixels_to_move) + "px";
+                        style.bottom = (parseFloat(bottom) - pixels_to_move) + "px";
                 break;
 
                 // Define o Dino correndo agachado. Mudo de sprite a cada 30 frames, pra esta mudança poder ser perceptível
@@ -397,6 +468,82 @@
 
         }
         
+    }
+
+    /****************************************************************************/
+    /*                             Classe GameOver                              */
+    /****************************************************************************/
+
+    /** Contém a mensagem de Game Over e o botão de restart */
+    class GameOver {
+
+        constructor() {
+
+            // Aqui crio uma 'div' que encapsula a mensagem e o botão
+            this.element = document.createElement("div");
+            this.element.className = "game_over_div";
+
+            // Esta div contém apenas a mensagem "Game Over"
+            this.game_over = document.createElement("div");
+            this.game_over.className  = "game_over";
+            this.element.appendChild(this.game_over);
+
+            // Esta outra div contém o botão de restart
+            this.botao_restart = document.createElement("div");
+            this.botao_restart.className = "botao_restart";
+            this.botao_restart.onclick   = reinicia;
+            this.element.appendChild(this.botao_restart);
+
+        }
+
+        /** Controla a visibilidade desta div */
+        setVisible(visibility) {
+
+            if (visibility)
+                div_deserto.element.appendChild(this.element);
+            else
+                div_deserto.element.removeChild(this.element);
+
+        }
+
+    }
+
+    /****************************************************************************/
+    /*                               Classe Nuvem                               */
+    /****************************************************************************/  
+
+    /** Representa cada nuvem do deserto */
+    class Nuvem {
+
+        constructor() {
+
+            // Aqui crio uma 'div' que representará uma nuvem
+            this.element = document.createElement("div");
+            this.element.className = "nuvem";
+
+            // A nuvem é criada sempre mais a direita e com distância em relação ao topo entre 0 e 120px
+            this.element.style.right = "0px";
+            this.element.style.top = Math.floor(Math.random() * 120) + "px";
+
+            // Note que a nuvem é filha do deserto!
+            div_deserto.element.appendChild(this.element);
+        }
+
+        // Move a nuvem pra esquerda sempre com a metade da velocidade do Dino
+        mover() {
+            this.element.style.right = (parseFloat(this.element.style.right) + (pixels_to_move / 2)) + "px";
+        }
+
+        /** Remove todas as nuvens do deserto */
+        static clearAll() {
+            
+            for (var i = div_nuvens_array.length - 1; i >=0; --i) {
+                div_deserto.element.removeChild(div_nuvens_array[i].element);
+                div_nuvens_array.splice(i,1);
+            }
+
+        }
+
     }
 
     /****************************************************************************/
@@ -535,44 +682,6 @@
     }
 
     /****************************************************************************/
-    /*                               Classe Nuvem                               */
-    /****************************************************************************/  
-
-    /** Representa cada nuvem do deserto */
-    class Nuvem {
-
-        constructor() {
-
-            // Aqui crio uma 'div' que representará uma nuvem
-            this.element = document.createElement("div");
-            this.element.className = "nuvem";
-
-            // A nuvem é criada sempre mais a direita e com distância em relação ao topo entre 0 e 120px
-            this.element.style.right = "0px";
-            this.element.style.top = Math.floor(Math.random() * 120) + "px";
-
-            // Note que a nuvem é filha do deserto!
-            div_deserto.element.appendChild(this.element);
-        }
-
-        // Move a nuvem pra esquerda sempre com a metade da velocidade do Dino
-        mover() {
-            this.element.style.right = (parseInt(this.element.style.right) + (pixels_to_move / 2)) + "px";
-        }
-
-        /** Remove todas as nuvens do deserto */
-        static clearAll() {
-            
-            for (var i = div_nuvens_array.length - 1; i >=0; --i) {
-                div_deserto.element.removeChild(div_nuvens_array[i].element);
-                div_nuvens_array.splice(i,1);
-            }
-
-        }
-
-    }
-
-    /****************************************************************************/
     /*                            Classe Pterossauro                            */
     /****************************************************************************/
     
@@ -599,7 +708,7 @@
 
         }
 
-        // Move o Pterossauro '1px' pra esquerda
+        // Move o Pterossauro 'pixels_to_move'px pra esquerda
         mover() {
 
             var style = this.element.style;
@@ -609,7 +718,7 @@
                 style.backgroundPositionX = (style.backgroundPositionX == this.sprites.ptero_esq) ? this.sprites.ptero_dir : this.sprites.ptero_esq;
 
             // Desloca o Pterossauro '1px' pra esquerda
-            style.right = (parseInt(style.right) + pixels_to_move) + "px";
+            style.right = (parseFloat(style.right) + pixels_to_move) + "px";
 
         }
 
@@ -635,108 +744,6 @@
     }
 
     /****************************************************************************/
-    /*                               Classe Cacto                               */
-    /****************************************************************************/
-
-    /** Representa os Cactos do deserto */
-    class Cacto {
-
-        constructor() {
-
-            // Localização das imagens do Cacto nos sprites
-            this.sprites = [
-                {'position': '-227px', 'width': '18px', 'height': '40px'},   // 1 pequeno
-                {'position': '-245px', 'width': '34px', 'height': '40px'},   // 2 pequenos
-                {'position': '-279px', 'width': '52px', 'height': '40px'},   // 3 pequenos
-                {'position': '-331px', 'width': '26px', 'height': '53px'},   // 1 grande
-                {'position': '-357px', 'width': '50px', 'height': '53px'},   // 2 grandes
-                {'position': '-407px', 'width': '75px', 'height': '53px'}    // 4 misto
-            ];
-
-            // Construção do Cacto
-            this.element = document.createElement("div");
-            this.element.className    = "cacto";
-            this.element.style.right  = "0px";
-
-            // Constrói um cacto aleatório com base nos sprites
-            this.setRandomSprite();
-
-            // Adicionando o Cacto ao deserto
-            div_deserto.element.appendChild(this.element);
-
-        }
-
-        // Move o Cacto '1px' pra esquerda
-        mover() {
-
-            // Desloca o Pterossauro '1px' pra esquerda
-            this.element.style.right = (parseInt(this.element.style.right) + pixels_to_move) + "px";
-
-        }
-
-        // Gera um Cacto aleatório com base nos sprites
-        setRandomSprite() {
-
-            var index  = Math.floor(Math.random() * this.sprites.length);
-            var sprite = this.sprites[index];
-
-            this.element.style.width  = sprite.width ;
-            this.element.style.height = sprite.height;
-            this.element.style.backgroundPositionX = sprite.position;
-
-        }
-
-        // Remove todos os Cactos do deserto
-        static clearAll() {
-
-            for (var i = div_cactos_array.length - 1; i >=0; --i) {
-                div_deserto.element.removeChild(div_cactos_array[i].element);
-                div_cactos_array.splice(i,1);
-            }
-
-        }
-
-    }
-
-    /****************************************************************************/
-    /*                             Classe GameOver                              */
-    /****************************************************************************/
-
-    /** Contém a mensagem de Game Over e o botão de restart */
-    class GameOver {
-
-        constructor() {
-
-            // Aqui crio uma 'div' que encapsula a mensagem e o botão
-            this.element = document.createElement("div");
-            this.element.className = "game_over_div";
-
-            // Esta div contém apenas a mensagem "Game Over"
-            this.game_over = document.createElement("div");
-            this.game_over.className  = "game_over";
-            this.element.appendChild(this.game_over);
-
-            // Esta outra div contém o botão de restart
-            this.botao_restart = document.createElement("div");
-            this.botao_restart.className = "botao_restart";
-            this.botao_restart.onclick   = reinicia;
-            this.element.appendChild(this.botao_restart);
-
-        }
-
-        /** Controla a visibilidade desta div */
-        setVisible(visibility) {
-
-            if (visibility)
-                div_deserto.element.appendChild(this.element);
-            else
-                div_deserto.element.removeChild(this.element);
-
-        }
-
-    }
-
-    /****************************************************************************/
     /*                             Bloco de Funções                             */
     /****************************************************************************/
 
@@ -751,7 +758,7 @@
 
         // ...caso contrário, continuo sua execução
         else {
-            game_loop = setInterval(run,dificuldade_atual.interval);
+            game_loop = setInterval(run,1);
             game_running = true;
         }
 
@@ -777,7 +784,7 @@
 
         }
 
-}
+    }
 
     /** Muda as cores dos elementos visuais do jogo, dependendo do turno */
     function troca_turno() {
@@ -819,8 +826,10 @@
     function controla_pontuacao() {
 
         // A cada 30 frames incremento a pontuação
-        if (game_frames % 30 == 0)
+        if (game_frames_pont >= 30.0) {
             div_pontuacao_cur.increase();
+            game_frames_pont = 0.0;
+        }
 
     }
 
@@ -889,6 +898,7 @@
 
     }
 
+    /** Já tem o nome autoexplicativo :) */
     function movimenta_obstaculos() {
         movimenta_cactos();
         movimenta_pterossauros();
@@ -931,8 +941,8 @@
     /** Responsável por gerar obstáculos no deserto de acordo com a dificuldade atual do jogo */
     function gerador_obstaculos() {
 
-        // A cada 250 frames (espaço mínimo definido entre aparições de obstáculos)...
-        if (game_frames % 250 == 0) {
+        // A cada 300 frames (espaço mínimo definido entre aparições de obstáculos)...
+        if (game_frames % 300 == 0) {
 
             // ...calculo a probabilidade de surgir um obstáculo no deserto e...
             if (Math.floor(Math.random() * 100) <= dificuldade_atual.obstacle_probability) {
@@ -979,8 +989,10 @@
         // Esconde a 'div' do GameOver
         div_game_over.setVisible(false);
 
-        // Reinicia o contador de frames
+        // Reinicia os contadores de frames
         game_frames = 0;
+        game_frames_pont = 0.0;
+        game_frames_veloc = 0.0;
 
         // Reinicia os controladores de execução
         game_started = false;
@@ -992,8 +1004,9 @@
         // Ressuscita o Dino
         div_dino.ressuscita();
 
-        // Reinicia a dificuldade do jogo
+        // Reinicia a dificuldade e velocidade do jogo
         dificuldade_atual = dificuldade[0];
+        pixels_to_move = 0.5;
 
     }
 
@@ -1038,7 +1051,9 @@
 
         controla_colisao();
 
-        game_frames += pixels_to_move;
+        game_frames += 1;
+        game_frames_pont += pixels_to_move;
+        game_frames_veloc += pixels_to_move;
 
     }
 
