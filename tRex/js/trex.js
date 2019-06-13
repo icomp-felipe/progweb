@@ -901,7 +901,7 @@
 
         var cacto_rect = div_cactos_array[0].element.getBoundingClientRect();
 
-        return (( dino_rect.right >= cacto_rect.left ) && ( dino_rect.bottom >= cacto_rect.top ) && ( dino_rect.left <= cacto_rect.right ));
+        return (( dino_rect.right >= (cacto_rect.left + 20) ) && ( dino_rect.bottom >= (cacto_rect.top + 20) ) && ( dino_rect.left <= ( cacto_rect.right - 20) ));
 
     }
 
@@ -913,7 +913,7 @@
 
         var pterossauro_rect = div_pterossauros_array[0].element.getBoundingClientRect();
 
-        return (( dino_rect.right >= pterossauro_rect.left ) && ( dino_rect.bottom >= pterossauro_rect.top ) && ( dino_rect.top <= pterossauro_rect.bottom ));
+        return (( dino_rect.right >= (pterossauro_rect.left + 15) ) && ( dino_rect.bottom >= (pterossauro_rect.top + 15) ) && ( dino_rect.top <= pterossauro_rect.bottom ) && (dino_rect.left <= (pterossauro_rect.right - 10) ));
 
     }
 

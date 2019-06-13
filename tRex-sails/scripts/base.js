@@ -1,22 +1,3 @@
-icomp@lab138c ~ $  ssh master@10.208.200.154
-master@10.208.200.154's password: 
-Welcome to Linux Mint 18.1 Serena (GNU/Linux 4.4.0-53-generic x86_64)
-
- * Documentation:  https://www.linuxmint.com
-Last login: Wed Jun 12 17:17:16 2019 from 10.208.200.145
-master@icomp-pc ~ $ 
-master@icomp-pc ~ $ 
-master@icomp-pc ~ $ cd Área\ de\ Trabalho/progweb/
-master@icomp-pc ~/Área de Trabalho/progweb $ ls
-CSS1  CSS3   DOM1  DOM3  JS2  JS4      README.md  tRexSails
-CSS2  dadas  DOM2  JS1   JS3  prova01  tRex
-master@icomp-pc ~/Área de Trabalho/progweb $ cd tRex
-master@icomp-pc ~/Área de Trabalho/progweb/tRex $ ls
-css  favicon.ico  index.html  js  README.md
-master@icomp-pc ~/Área de Trabalho/progweb/tRex $ cd js/
-master@icomp-pc ~/Área de Trabalho/progweb/tRex/js $ l
-trex.js
-master@icomp-pc ~/Área de Trabalho/progweb/tRex/js $ cat trex.js 
 (function () {
 
     const FPS = 300;
@@ -567,4 +548,4 @@ master@icomp-pc ~/Área de Trabalho/progweb/tRex/js $ cat trex.js
         //pont.setSprite(pont.sprites[0]);
     }
 
-})();master@icomp-pc ~/Área de Trabalho/progweb/tRex/js $ 
+})();
