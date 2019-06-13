@@ -40,14 +40,11 @@ html, body {
 /* Define a posição do dinossauro, sempre à '15px' da esquerda do deserto */
 .dino {
 
-    height: 45px;
-
     background-image     : url(sprites.png);
-    background-position-y: -3px;
 
     position: absolute;
     left    : 15px;
-    z-index : 2;
+    z-index : 3;
 
 }
 

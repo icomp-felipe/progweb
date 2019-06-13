@@ -272,12 +272,12 @@
 
             // Localização das imagens do dino nos sprites
             this.sprites = {
-                'correr_esq'    : {'position': '-765px' , 'width': '44px'},
-                'correr_dir'    : {'position': '-809px' , 'width': '44px'},
-                'agachado_esq'  : {'position': '-941px' , 'width': '58px'},
-                'agachado_dir'  : {'position': '-1000px', 'width': '58px'},
-                'parado_pulando': {'position': '-677px' , 'width': '44px'},
-                'colidido'      : {'position': '-854px' , 'width': '44px'}
+                'correr_esq'    : {'positionX': '-765px' , 'positionY': '-3px' , 'width': '44px', 'height': '45px'},
+                'correr_dir'    : {'positionX': '-809px' , 'positionY': '-3px' , 'width': '44px', 'height': '45px'},
+                'agachado_esq'  : {'positionX': '-941px' , 'positionY': '-20px', 'width': '58px', 'height': '30px'},
+                'agachado_dir'  : {'positionX': '-1000px', 'positionY': '-20px', 'width': '58px', 'height': '30px'},
+                'parado_pulando': {'positionX': '-677px' , 'positionY': '-3px' , 'width': '44px', 'height': '45px'},
+                'colidido'      : {'positionX': '-854px' , 'positionY': '-3px' , 'width': '44px', 'height': '45px'}
             };
 
             // Define o estado atual do Dino
@@ -291,6 +291,7 @@
             this.element = document.createElement("div");
             this.element.className = "dino";
             this.element.style.bottom = "0px";
+            this.element.style.height = "45px";
             this.setSprite(this.sprites.parado_pulando);
 
             // Adicionano o Dino ao deserto
@@ -298,9 +299,11 @@
 
         }
 
-        /** Define a posição do sprite e sua largura */
+        /** Define a posição do sprite, largura e altura */
         setSprite(sprite) {
-            this.element.style.backgroundPositionX = sprite.position;
+            this.element.style.backgroundPositionX = sprite.positionX;
+            this.element.style.backgroundPositionY = sprite.positionY;
+            this.element.style.height = sprite.height;
             this.element.style.width = sprite.width;
         }
 
@@ -332,7 +335,7 @@
                 // Define o Dino correndo em pé. Mudo de sprite a cada 30 frames, pra esta mudança poder ser perceptível
                 case "correndo_normal":
                     if (game_frames % 30 == 0)
-                        this.setSprite((style.backgroundPositionX == this.sprites.correr_esq.position) ? this.sprites.correr_dir :this.sprites.correr_esq);
+                        this.setSprite((style.backgroundPositionX == this.sprites.correr_esq.positionX) ? this.sprites.correr_dir :this.sprites.correr_esq);
                 break;
 
                 // Define o Dino subindo ao pular
@@ -382,7 +385,7 @@
                 // Define o Dino correndo agachado. Mudo de sprite a cada 30 frames, pra esta mudança poder ser perceptível
                 case "correndo_agachado":
                     if (game_frames % 30 == 0)
-                        this.setSprite((style.backgroundPositionX == this.sprites.agachado_esq.position) ? this.sprites.agachado_dir : this.sprites.agachado_esq);
+                        this.setSprite((style.backgroundPositionX == this.sprites.agachado_esq.positionX) ? this.sprites.agachado_dir : this.sprites.agachado_esq);
                 break;
 
                 // Define o Dino colidido
@@ -552,9 +555,9 @@
             div_deserto.element.appendChild(this.element);
         }
 
-        // Move a nuvem '1px' pra esquerda
+        // Move a nuvem pra esquerda sempre com a metade da velocidade do Dino
         mover() {
-            this.element.style.right = (parseInt(this.element.style.right) + pixels_to_move) + "px";
+            this.element.style.right = (parseInt(this.element.style.right) + (pixels_to_move / 2)) + "px";
         }
 
         /** Remove todas as nuvens do deserto */
@@ -613,7 +616,7 @@
         // Retorna uma altura aleatória para o aparecimento do Pterossauro
         static getRandomHeight() {
 
-            var alturas = ["5px","25px","50px"];
+            var alturas = ["5px","35px","50px"];
 
             return alturas[Math.floor(Math.random() * 3)];
 
@@ -839,12 +842,10 @@
 
         }
         
-        // Loop que movimenta cada nuvem do array com a metade da velocidade do dino
-        if (game_frames % 2 == 0) {
-            div_nuvens_array.forEach(function (nuvem) {
-                nuvem.mover();
-            });
-        }
+        // Loop que movimenta cada nuvem do array com a metade da velocidade do Dino
+        div_nuvens_array.forEach(function (nuvem) {
+            nuvem.mover();
+        });
 
     }
 
@@ -913,7 +914,7 @@
 
         var pterossauro_rect = div_pterossauros_array[0].element.getBoundingClientRect();
 
-        return (( dino_rect.right >= (pterossauro_rect.left + 15) ) && ( dino_rect.bottom >= (pterossauro_rect.top + 15) ) && ( dino_rect.top <= pterossauro_rect.bottom ) && (dino_rect.left <= (pterossauro_rect.right - 10) ));
+        return (( dino_rect.right >= (pterossauro_rect.left + 15) ) && ( dino_rect.bottom >= (pterossauro_rect.top + 15) ) && ( dino_rect.top <= (pterossauro_rect.bottom - 10) ) && (dino_rect.left <= (pterossauro_rect.right - 10) ));
 
     }
 
