@@ -18,19 +18,19 @@
         <div class="col-sm">
             <form action='/curso/create' method="POST">
                 <div class="form-group">
-                    <label for="exampleInputEmail1">Nome do Curso</label>
-                    <input type="text" class="form-control" id="input_nome">
+                    <label for="nome_curso">Nome do Curso</label>
+                    <input type="text" class="form-control" name="input_nome">
                 </div>
                 <div class="form-group">
-                    <label for="exampleInputPassword1">Sigla</label>
-                    <input type="text" class="form-control" id="input_sigla">
+                    <label for="sigla">Sigla</label>
+                    <input type="text" class="form-control" name="input_sigla">
                 </div>
                 <div class="form-group">
-                    <label for="exampleInputPassword1">Descrição</label>
-                    <textarea class="form-control" id="input_descricao" rows="3"></textarea>
+                    <label for="descricao">Descrição</label>
+                    <textarea class="form-control" name="input_descricao" rows="3"></textarea>
                 </div>
                 <input type="hidden" name="_csrf" value="<%= _csrf %>">
-                <button type="submit" class="btn btn-primary">Cadastrar</button>
+                <button id="button_cadastrar" type="submit" class="btn btn-primary">Cadastrar</button>
             </form>
         </div>
     </div>

@@ -17,9 +17,17 @@ module.exports = {
 
     create: async function (req,res) {
 
-        console.log(res);
+        if (req.method == "POST") {
 
-        res.view('curso/create');
+            var params = req.allParams();
+
+            console.log(params.input_nome);
+
+            console.log('executei o POST caraio');
+
+        }
+        else
+            res.view('curso/create');
 
     },
 
