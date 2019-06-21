@@ -1,0 +1,31 @@
+<div id="curso" class="container mt-4">
+
+    <div class="row">
+        <div class="col-sm">
+            <h2>Ranking dos Jogadores</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Jogador</th>
+                        <th scope="col">Pontuação</th>
+                        <th scope="col">Data/Hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% ranking.forEach(function(rank) { %>
+                    <tr>
+                        <th scope="row"><%= rank.jogador %></th>
+                        <td><%= rank.pontuacao %></td>
+                        <td><%= rank.data %></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
