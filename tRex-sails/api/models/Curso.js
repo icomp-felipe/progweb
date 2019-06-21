@@ -20,7 +20,9 @@ module.exports = {
 
       sigla: {
         type: 'string',
-        columnType: 'CHAR(4)'
+        columnType: 'CHAR(4)',
+        unique: true,
+        required: true
       },
 
       descricao: {

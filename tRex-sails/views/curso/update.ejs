@@ -5,33 +5,33 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/">Home</a></li>
                     <li class="breadcrumb-item"><a href="/curso">Cursos</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Novo</li>
+                    <li class="breadcrumb-item active" aria-current="page">Atualizar</li>
                 </ol>
             </nav>
         </div>
     </div>
     <div class="row">
         <div class="col-sm">
-            <h2>Criando um novo curso</h2>
+            <h2>Atualizando um curso existente</h2>
         </div>
     </div>
     <div class="row">
         <div class="col-sm">
-            <form action='/curso/create' method="POST">
+            <form action='/curso/update/<%= curso.id %>' method="POST">
                 <div class="form-group">
                     <label for="nome_curso">Nome do Curso</label>
-                    <input type="text" class="form-control" name="nome">
+                    <input type="text" class="form-control" name="nome" value="<%= curso.nome %>">
                 </div>
                 <div class="form-group">
                     <label for="sigla">Sigla</label>
-                    <input type="text" class="form-control" name="sigla">
+                    <input type="text" class="form-control" name="sigla" value="<%= curso.sigla %>">
                 </div>
                 <div class="form-group">
                     <label for="descricao">Descrição</label>
-                    <textarea class="form-control" name="descricao" rows="3"></textarea>
+                    <textarea class="form-control" name="descricao" rows="3"><%= curso.descricao %></textarea>
                 </div>
                 <input type="hidden" name="_csrf" value="<%= _csrf %>">
-                <button id="button_cadastrar" type="submit" class="btn btn-primary">Cadastrar</button>
+                <button id="button_cadastrar" type="submit" class="btn btn-primary">Atualizar</button>
             </form>
         </div>
     </div>
