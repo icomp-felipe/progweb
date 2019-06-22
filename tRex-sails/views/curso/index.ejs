@@ -33,7 +33,7 @@
             <td><%= curso.sigla %></td>
             <td><%= curso.nome %></td>
             <td>
-              <a class="btn btn-info btn-sm" href="/curso/read/<%= curso.id %>" data-id='<%= curso.id %>' data-nome="<%= curso.nome %>" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-search" aria-hidden="true"></i></a>
+              <a class="btn btn-info btn-sm" href="/curso/read/<%= curso.id %>"><i class="fa fa-search" aria-hidden="true"></i></a>
               <a class="btn btn-warning btn-sm" href="/curso/update/<%= curso.id %>"><i class="fa fa-pencil" aria-hidden="true"></i></a>
               <a class="btn btn-danger btn-sm" href="/curso/delete/<%= curso.id %>"><i class="fa fa-trash" aria-hidden="true"></i></a>
             </td>
@@ -52,7 +52,6 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                  wdfqw efqwefqwefqwerfqwer
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-outline-info" data-dismiss="modal">Fechar</button>
@@ -67,3 +66,5 @@
     </div>
   </div>
 </div>
+
+<script src="/js/pages/index-scripts.js"></script>
