@@ -15,6 +15,8 @@ module.exports.policies = {
   // Bypass the `is-logged-in` policy for:
   'entrance/*': true,
   'curso/*': true,
+  'game/*': true,
+  'view-ranking/*': true,
   'account/logout': true,
   'view-homepage-or-redirect': true,
   'view-faq': true,

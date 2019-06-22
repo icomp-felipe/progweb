@@ -14,7 +14,7 @@
                     <label for="nome_curso">Por favor, selecione seu curso na UFAM:</label>
                     <select class="form-control" id="nome_curso">
                         <% cursos.forEach(function (curso) { %>
-                        <option><%= curso.nome %></option>
+                        <option value="<%= curso.id %>"><%= curso.nome %></option>
                         <% }); %>
                     </select>
                 </div>

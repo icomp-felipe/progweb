@@ -11,7 +11,8 @@
   </div>
   <div class="row">
     <div class="col-sm">
-      <h2>Cursos da UFAM <a class="btn btn-dark" href="/curso/create" role="button" data-toggle="tooltip" data-placement="top" title="Cria um novo curso">+</a></h2>
+      <h2>Cursos da UFAM <a class="btn btn-dark" href="/curso/create" role="button" data-toggle="tooltip"
+          data-placement="top" title="Cria um novo curso">+</a></h2>
     </div>
   </div>
   <div class="row">
@@ -32,14 +33,37 @@
             <td><%= curso.sigla %></td>
             <td><%= curso.nome %></td>
             <td>
-              <a href="/curso/read/<%= curso.id %>"><i class="fa fa-eye" aria-hidden="true"></i></a>
-              <a href="/curso/update/<%= curso.id %>"><i class="fa fa-pencil" aria-hidden="true"></i></a>
-              <a href="/curso/delete/<%= curso.id %>"><i class="fa fa-trash" aria-hidden="true"></i></a>
+              <a class="btn btn-info btn-sm" href="/curso/read/<%= curso.id %>" data-id='<%= curso.id %>' data-nome="<%= curso.nome %>" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-search" aria-hidden="true"></i></a>
+              <a class="btn btn-warning btn-sm" href="/curso/update/<%= curso.id %>"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+              <a class="btn btn-danger btn-sm" href="/curso/delete/<%= curso.id %>"><i class="fa fa-trash" aria-hidden="true"></i></a>
             </td>
           </tr>
           <% }) %>
+
+          <!-- Modal -->
+          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Informações do Curso</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  wdfqw efqwefqwefqwerfqwer
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-info" data-dismiss="modal">Fechar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </tbody>
       </table>
+      <hr />
     </div>
   </div>
 </div>
