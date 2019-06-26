@@ -13,8 +13,10 @@ module.exports.routes = {
   //  ╦ ╦╔═╗╔╗ ╔═╗╔═╗╔═╗╔═╗╔═╗
   //  ║║║║╣ ╠╩╗╠═╝╠═╣║ ╦║╣ ╚═╗
   //  ╚╩╝╚═╝╚═╝╩  ╩ ╩╚═╝╚═╝╚═╝
-  'GET /':                   { action: 'game/trex' },
-  'GET /welcome/:unused?':   { action: 'dashboard/view-welcome' },
+  'GET /':                     { action: 'game/trex' },
+  'POST /salvar-pontuacao':    { action: 'game/salvarPontuacao' },
+  'POST /recupera-pontuacao':  { action: 'game/recuperaPontuacao' },
+  'GET /welcome/:unused?':     { action: 'dashboard/view-welcome' },
 
   'GET /faq':                { action:   'view-faq' },
   'GET /sobre':    			     { action:   'view-sobre' },

@@ -26,7 +26,7 @@ module.exports = {
 
       data: {
         type: 'string',
-        columnType: 'VARCHAR(45)'
+        autoCreatedAt: true
       },
   
       //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗

@@ -968,6 +968,45 @@
 
     }
 
+    /** Registra a pontuação do jogo no servidor */
+    function cadastra_pontuacao() {
+
+        $.ajax({
+            method: "POST",
+            url: "/salvar-pontuacao",
+            data: {
+                pontuacao: div_pontuacao_cur.getPontuacao(),
+                _csrf: document.querySelector("#_csrf").value
+            },
+            success: function (data) {
+                console.log(data);
+            },
+            error: function () {
+                
+            }
+        });
+
+    }
+
+    /** Recupera a pontuação do jogo no servidor */
+    function recupera_pontuacao() {
+
+        $.ajax({
+            method: "POST",
+            url: "/recupera-pontuacao",
+            data: {
+                _csrf: document.querySelector("#_csrf").value
+            },
+            success: function (data) {
+                div_pontuacao_max.pontuacao_max(data);
+            },
+            error: function () {
+                
+            }
+        });
+
+    }
+
     /** Executa vários procedimentos quando o jogo é encerrado */
     function encerra_jogo() {
 
@@ -986,6 +1025,8 @@
 
         // Por fim, atualizo a pontuação máxima
         div_pontuacao_max.pontuacao_max(div_pontuacao_cur.getPontuacao());
+
+        cadastra_pontuacao();
         
     }
 
@@ -1041,6 +1082,11 @@
 
         // Inicia o controlador de mudança de turno
         turno_loop = setInterval(controla_turno,1000);
+
+        setTimeout(function () {
+            recupera_pontuacao();
+        }, 600);
+        
 
     }
 
