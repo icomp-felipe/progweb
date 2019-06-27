@@ -34,8 +34,7 @@
             <td><%= curso.sigla %></td>
             <td><%= curso.nome %></td>
             <td>
-              <!-- <a class="btn btn-info btn-sm" href="/curso/read/<%= curso.id %>"><i class="fa fa-search" aria-hidden="true"></i></a> -->
-              <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#exampleModal" data-id="<%= curso.id %>"><i class="fa fa-search" aria-hidden="true"></i></button>
+              <button id="but-ver-<%= curso.id %>" class="btn btn-info btn-sm" data-toggle="modal" data-target="#exampleModal" data-id="<%= curso.id %>" data-sigla="<%= curso.sigla %>" data-nome="<%= curso.nome %>" data-descricao="<%= curso.descricao %>"><i class="fa fa-search" aria-hidden="true"></i></button>
               <a class="btn btn-warning btn-sm" href="/curso/update/<%= curso.id %>"><i class="fa fa-pencil" aria-hidden="true"></i></a>
               <a class="btn btn-danger btn-sm" href="/curso/delete/<%= curso.id %>"><i class="fa fa-trash" aria-hidden="true"></i></a>
             </td>
@@ -49,44 +48,30 @@
   
   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">New message</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
           <div class="modal-body">
-            <form>
-              <div class="form-group">
-                <label for="recipient-name" class="col-form-label">Recipient:</label>
-                <input type="text" class="form-control" id="recipient-name">
-              </div>
-              <div class="form-group">
-                <label for="message-text" class="col-form-label">Message:</label>
-                <textarea class="form-control" id="message-text"></textarea>
-              </div>
-            </form>
+              <ul class="list-group">
+                  <li class="list-group-item active"><b><span id="modal-cabeca"></span></b><button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-close" aria-hidden="true"></i></button></li>
+                  <li class="list-group-item"><div id="modal-corpo"></div></li>
+              </ul>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Send message</button>
-          </div>
-        </div>
       </div>
     </div>
 
 </div>
 
+
 <script>
-$('#exampleModal').on('shown.bs.modal', function (event) {
-  console.log("cu");
-  var button = $(event.relatedTarget) // Button that triggered the modal
-  var recipient = button.data('id') // Extract info from data-* attributes
-  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-  var modal = $(this)
-  modal.find('.modal-title').text('New message to ' + recipient)
-  modal.find('.modal-body input').val(recipient)
-})
+  $(document).ready( function () {
+    $("[id*='but-ver-']").click(function(event){
+
+      var data = $(event.delegateTarget).data();
+      
+      var cabeca = `${data.id}. ${data.nome} (${data.sigla})`;
+      var corpo = data.descricao;
+      
+      $("#modal-cabeca").text(cabeca);
+      $("#modal-corpo").text(corpo);
+
+    })
+  });
 </script>
