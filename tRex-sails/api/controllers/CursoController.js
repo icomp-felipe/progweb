@@ -5,7 +5,7 @@ module.exports = {
 
         var cursos = await Curso.find();
 
-        res.view('curso/index', {cursos:cursos});
+        res.view('pages/curso/index', {cursos:cursos});
 
     },
 
@@ -28,7 +28,7 @@ module.exports = {
 
         }
         else
-            res.view('curso/create');
+            res.view('pages/curso/create');
 
     },
 
@@ -68,7 +68,7 @@ module.exports = {
                 if (!curso)
                     console.log(`Não achei o registro ${id}`);
                 else
-                    res.view('curso/update',{curso: curso});
+                    res.view('pages/curso/update',{curso: curso});
 
             }
             catch (error) {

@@ -14,13 +14,13 @@ module.exports.routes = {
   //  ║║║║╣ ╠╩╗╠═╝╠═╣║ ╦║╣ ╚═╗
   //  ╚╩╝╚═╝╚═╝╩  ╩ ╩╚═╝╚═╝╚═╝
   'GET /':                     { action: 'game/trex' },
+  'GET /ranking':    		       { action: 'game/ranking' },
   'POST /salvar-pontuacao':    { action: 'game/salvarPontuacao' },
   'POST /recupera-pontuacao':  { action: 'game/recuperaPontuacao' },
   'GET /welcome/:unused?':     { action: 'dashboard/view-welcome' },
 
   'GET /faq':                { action:   'view-faq' },
   'GET /sobre':    			     { action:   'view-sobre' },
-  'GET /ranking':    		     { action:   'view-ranking' },
   'GET /legal/terms':        { action:   'legal/view-terms' },
   'GET /legal/privacy':      { action:   'legal/view-privacy' },
   'GET /contact':            { action:   'view-contact' },

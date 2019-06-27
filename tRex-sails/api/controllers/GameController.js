@@ -1,9 +1,18 @@
 module.exports = {
   
     trex: async function(req,res) {
-        res.view('pages/game/trex');
+        res.view('pages/homepage-trex');
     },
 
+    /** Exibe o ranking das jogadas */
+    ranking: async function(req,res) {
+
+        var ranking = await Jogada.find();
+        res.view('pages/ranking',{ranking:ranking});
+
+    },
+
+    /** Salva a pontuação máxima do jogador na base de dados */
     salvarPontuacao: async function(req,res) {
 
         await Jogada.create({
@@ -11,10 +20,9 @@ module.exports = {
             pontuacao: req.body.pontuacao
         });
 
-        res.end("Pontuacao salva: " + req.body.pontuacao);
-
     },
 
+    /** Devolve a pontuação máxima do game */
     recuperaPontuacao: async function(req,res) {
 
         // select pontuacao from jogada order by pontuacao desc limit 1

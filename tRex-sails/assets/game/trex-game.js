@@ -1083,10 +1083,10 @@
         // Inicia o controlador de mudança de turno
         turno_loop = setInterval(controla_turno,1000);
 
+        // Delay pro browser carregar o jQuery
         setTimeout(function () {
             recupera_pontuacao();
         }, 600);
-        
 
     }
 
