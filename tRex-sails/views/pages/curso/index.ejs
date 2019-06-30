@@ -34,9 +34,9 @@
             <td><%= curso.sigla %></td>
             <td><%= curso.nome %></td>
             <td>
-              <button id="but-ver-<%= curso.id %>" class="btn btn-info btn-sm" data-toggle="modal" data-target="#exampleModal" data-id="<%= curso.id %>" data-sigla="<%= curso.sigla %>" data-nome="<%= curso.nome %>" data-descricao="<%= curso.descricao %>"><i class="fa fa-search" aria-hidden="true"></i></button>
+              <button id="but-read-<%= curso.id %>" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-read" data-id="<%= curso.id %>" data-sigla="<%= curso.sigla %>" data-nome="<%= curso.nome %>" data-descricao="<%= curso.descricao %>"><i class="fa fa-search" aria-hidden="true"></i></button>
               <a class="btn btn-warning btn-sm" href="/curso/update/<%= curso.id %>"><i class="fa fa-pencil" aria-hidden="true"></i></a>
-              <a class="btn btn-danger btn-sm" href="/curso/delete/<%= curso.id %>"><i class="fa fa-trash" aria-hidden="true"></i></a>
+              <button id="but-del-<%= curso.id %>" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modal-delete" data-id="<%= curso.id %>" data-sigla="<%= curso.sigla %>" data-nome="<%= curso.nome %>"><i class="fa fa-trash" aria-hidden="true"></i></button>
             </td>
           </tr>
           <% }) %>
@@ -46,32 +46,93 @@
     </div>
   </div>
   
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-          <div class="modal-body">
-              <ul class="list-group">
-                  <li class="list-group-item active"><b><span id="modal-cabeca"></span></b><button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-close" aria-hidden="true"></i></button></li>
-                  <li class="list-group-item"><div id="modal-corpo"></div></li>
-              </ul>
-          </div>
+  <div class="modal fade" id="modal-read" tabindex="-1" role="dialog" aria-labelledby="modal-read-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-body">
+        <ul class="list-group">
+          <li class="list-group-item active"><b><span id="modal-read-header"></span></b><button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-close" aria-hidden="true"></i></button></li>
+          <li class="list-group-item"><div id="modal-read-body"></div></li>
+        </ul>
       </div>
     </div>
+  </div>
+
+  <div class="modal fade" id="modal-delete" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Excluir Curso</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Deseja mesmo excluir o curso: <span id="modal-del-resume"></span></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="but-delete">Excluir</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <input type="hidden" id="_csrf" value="<%= _csrf %>">
 
 </div>
 
 
 <script>
   $(document).ready( function () {
-    $("[id*='but-ver-']").click(function(event){
+    $("[id*='but-read-']").click(function(event){
 
       var data = $(event.delegateTarget).data();
       
-      var cabeca = `${data.id}. ${data.nome} (${data.sigla})`;
-      var corpo = data.descricao;
+      var header = `${data.id}. ${data.nome} (${data.sigla})`;
+      var body   = data.descricao;
       
-      $("#modal-cabeca").text(cabeca);
-      $("#modal-corpo").text(corpo);
+      $("#modal-read-header").text(header);
+      $("#modal-read-body").text(body);
 
     })
+  });
+</script>
+
+<script>
+  $(document).ready( function () {
+    $("[id*='but-del-']").click(function(event){
+
+      var data = $(event.delegateTarget).data();
+      
+      var resume = `"${data.id}. ${data.nome} (${data.sigla})"?`;
+      
+      $("#modal-del-resume").text(resume);
+      $("#but-delete").data("id",data.id);
+
+    })
+  });
+</script>
+
+<script>
+  $(document).ready( function () {
+    $("#but-delete").click(function(event){
+
+      var id = $(this).data("id");
+
+      $.ajax({
+            method: "POST",
+            url: "/curso/delete",
+            data: {
+                id: id,
+                _csrf: document.querySelector("#_csrf").value
+            },
+            success: function (data) {
+              window.location.replace("/curso");
+            },
+            error: function () {
+            }
+      });
+
+    });
   });
 </script>

@@ -32,15 +32,6 @@ module.exports = {
 
     },
 
-    read: async function (req,res) {
-
-        var id = req.param("cursoId");
-        var curso = await Curso.findOne({id: id});
-
-        console.log(`ID: ${curso.id}, Nome: ${curso.nome}, Sigla: ${curso.sigla}, Descrição: ${curso.descricao}`);
-
-    },
-
     update: async function (req,res) {
 
         if (req.method == "POST") {
@@ -81,10 +72,9 @@ module.exports = {
 
     delete: async function (req,res) {
 
-        var id = req.param('cursoId');
-        await Curso.destroy({id: id});
+        await Curso.destroy({id: req.body.id});
 
-        res.redirect('/curso');
+        res.end(`:: Removido curso com id: ${req.body.id}`);
 
     }
   
