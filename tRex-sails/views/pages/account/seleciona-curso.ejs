@@ -12,7 +12,7 @@
             <form action='/account/curso' method="POST">
                 <div class="form-group">
                     <label for="nome_curso">Por favor, selecione seu curso na UFAM:</label>
-                    <select class="form-control" id="nome_curso">
+                    <select name="combo_id_curso" class="form-control" id="nome_curso">
                         <% cursos.forEach(function (curso) { %>
                         <option value="<%= curso.id %>"><%= curso.nome %></option>
                         <% }); %>

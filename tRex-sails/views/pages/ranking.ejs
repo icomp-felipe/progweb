@@ -30,7 +30,7 @@
                 <tbody>
                     <% ranking.forEach(function(rank) { %>
                     <tr>
-                        <th scope="row"><%= rank.jogador %></th>
+                        <th scope="row"><%= rank.jogador.fullName %></th>
                         <td><%= rank.pontuacao %></td>
                         <td><%= rank.data %></td>
                     </tr>

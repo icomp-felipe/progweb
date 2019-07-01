@@ -37,6 +37,15 @@ module.exports = {
       example: 'Mary Sue van der McHenst'
     },
 
+    jogadas: {
+      collection: 'Jogada',
+      via: 'jogador'
+    },
+
+    curso: {
+      model: 'Curso'
+    }
+
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗
     //  ╚═╝╩ ╩╚═╝╚═╝═╩╝╚═╝

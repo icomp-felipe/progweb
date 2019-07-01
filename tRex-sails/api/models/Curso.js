@@ -29,6 +29,11 @@ module.exports = {
         type: 'string',
         columnType: 'text'
       },
+
+      usuarios: {
+        collection: 'User',
+        via: 'curso'
+      }
   
       //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
       //  ║╣ ║║║╠╩╗║╣  ║║╚═╗

@@ -13,9 +13,7 @@ module.exports = {
       //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
   
       jogador: {
-          type: 'number',
-          columnType: 'int',
-          required: true
+          model: 'User'
       },
 
       pontuacao: {

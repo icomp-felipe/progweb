@@ -7,7 +7,7 @@ module.exports = {
     /** Exibe o ranking das jogadas */
     ranking: async function(req,res) {
 
-        var ranking = await Jogada.find();
+        var ranking = await Jogada.find().populate('jogador');
         res.view('pages/ranking',{ranking:ranking});
 
     },
@@ -27,7 +27,11 @@ module.exports = {
 
         // select pontuacao from jogada order by pontuacao desc limit 1
         var max = await Jogada.find({ select: ['pontuacao'], sort: 'pontuacao DESC', limit: 1});
-        res.end(`${max[0].pontuacao}`);
+
+        if (max)
+            res.end(`${max[0].pontuacao}`);
+        else
+            res.end('0');
 
     }
 
