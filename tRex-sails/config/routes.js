@@ -33,11 +33,11 @@ module.exports.routes = {
   'GET /password/forgot':    { action: 'entrance/view-forgot-password' },
   'GET /password/new':       { action: 'entrance/view-new-password' },
 
-  'GET /account':            { action: 'account/view-account-overview' },
-  'GET /account/password':   { action: 'account/view-edit-password' },
-  'GET /account/profile':    { action: 'account/view-edit-profile' },
-  'GET /account/curso':      { action: 'account/seleciona-curso' },
-  'POST /account/curso':     { action: 'account/seleciona-curso' },
+  'GET /account':                   { action: 'account/view-account-overview' },
+  'GET /account/password':          { action: 'account/view-edit-password' },
+  'GET /account/profile':           { action: 'account/view-edit-profile' },
+  'GET /account/seleciona-curso':   { action: 'account/seleciona-curso' },
+  'POST /account/seleciona-curso':  { action: 'account/seleciona-curso' },
 
   'GET /curso':                  { action: 'curso/index'  },
   'GET /curso/create':           { action: 'curso/create' },
