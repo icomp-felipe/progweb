@@ -14,7 +14,7 @@ module.exports = {
   
       nome: {
           type: 'string',
-          columnType: 'VARCHAR(64)',
+          columnType: 'VARCHAR(100)',
           required: true
       },
 

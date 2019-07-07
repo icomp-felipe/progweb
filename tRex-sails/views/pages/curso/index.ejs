@@ -51,7 +51,7 @@
       <div class="modal-body">
         <ul class="list-group">
           <li class="list-group-item active"><b><span id="modal-read-header"></span></b><button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-close" aria-hidden="true"></i></button></li>
-          <li class="list-group-item"><div id="modal-read-body"></div></li>
+          <li class="list-group-item"><div id="modal-read-body" class="breakable"></div></li>
         </ul>
       </div>
     </div>
@@ -80,7 +80,6 @@
   <input type="hidden" id="_csrf" value="<%= _csrf %>">
 
 </div>
-
 
 <script>
   $(document).ready( function () {
