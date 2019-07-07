@@ -1,4 +1,4 @@
-<div id="curso" class="container mt-4">
+<div id="trex-ranking" class="container mt-4">
 
     <div class="row">
         <div class="col-sm">
@@ -30,7 +30,7 @@
                 <tbody>
                     <% ranking.forEach(function(rank) { %>
                     <tr>
-                        <th scope="row"><%= rank.jogador.fullName %></th>
+                        <th scope="row"><%= rank.fullName %></th>
                         <td><%= rank.pontuacao %></td>
                         <td><%= rank.data %></td>
                     </tr>

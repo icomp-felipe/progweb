@@ -97,7 +97,8 @@
     /*                         Bloco de EventListeners                          */
     /****************************************************************************/
 
-    document.querySelector("#iniciar").addEventListener("click", function() {
+    /** Aqui defino que apenas o botão "Iniciar Jogo" da view de fato inicia o jogo */
+    document.querySelector("#botao_start").addEventListener("click", function() {
         event_start_game();
     });
 
@@ -128,6 +129,7 @@
 
     });
 
+    /** Variáveis de controle do touch */
     var x_down = null;
     var y_down = null;
 
@@ -180,14 +182,17 @@
 
     });
 
+    /** Função executada quando o botão "Iniciar Jogo" é acessado */
     function event_start_game() {
 
-        // ...e o jogo ainda não foi iniciado, dou o start e...
+        // Se o jogo ainda não foi iniciado, dou o start e escondo o botão iniciar
         if (!game_started) {
 
             div_dino.estado_atual = "pulando_subindo"
             start_pause();
             game_started = true;
+
+            document.querySelector("#botao_start").style.visibility = "hidden";
         
         }
 
@@ -299,7 +304,7 @@
             this.element = document.createElement("div");
             this.element.className = "deserto";
 
-            var x = document.querySelector("#jogo");
+            var x = document.querySelector("#trex-game");
             x.appendChild(this.element);
 
             // Aqui crio outra 'div' que representa o chão do deserto
@@ -1023,9 +1028,10 @@
         // Aqui torno visível a 'div' do Game Over
         div_game_over.setVisible(true);
 
-        // Por fim, atualizo a pontuação máxima
+        // Por fim, atualizo a pontuação máxima e...
         div_pontuacao_max.pontuacao_max(div_pontuacao_cur.getPontuacao());
 
+        // ...cadastro a pontuação atual no BD
         cadastra_pontuacao();
         
     }
@@ -1058,6 +1064,9 @@
         dificuldade_atual = dificuldade[0];
         pixels_to_move = 0.5;
 
+        // Reativando o botão iniciar
+        document.querySelector("#botao_start").style.visibility = "visible";
+
     }
 
     /** Reproduz um áudio do jogo */
@@ -1083,7 +1092,7 @@
         // Inicia o controlador de mudança de turno
         turno_loop = setInterval(controla_turno,1000);
 
-        // Recupera a pontuaćão depois de carregar a view
+        // Recupera a pontuação logo após carregar completamente a view
         window.onload = function() {
             recupera_pontuacao();
         }

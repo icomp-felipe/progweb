@@ -1,14 +1,23 @@
 module.exports = {
   
     trex: async function(req,res) {
-        res.view('pages/homepage-trex');
+        res.view('pages/trex-game');
     },
 
     /** Exibe o ranking das jogadas */
     ranking: async function(req,res) {
 
+        var lista = [];
         var ranking = await Jogada.find().populate('jogador');
-        res.view('pages/ranking',{ranking:ranking});
+
+        for (var i=0; i<ranking.length; i++) {
+            lista[i] = [];
+            lista[i].fullName = ranking[i].jogador.fullName;
+            lista[i].pontuacao = ranking[i].pontuacao;
+            lista[i].data = await sails.helpers.dateFormatter(ranking[i].data);
+        }
+
+        res.view('pages/trex-ranking',{ranking:lista});
 
     },
 

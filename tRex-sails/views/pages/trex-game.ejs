@@ -7,8 +7,12 @@
 </template>
 
 <div class="mt-3">
-      <div id="jogo"></div>
-      <button class="btn btn-outline-info mt-5 ml-5" id="iniciar">Iniciar</button>
-  </div>
+    <div id="trex-game"></div>
+    <div class="row">
+        <div class="col text-center mt-5">
+            <button class="btn btn-outline-info mt-5 ml-5" id="botao_start">Iniciar Jogo</button>
+        </div>
+    </div>
+</div>
 <input type="hidden" id="_csrf" value="<%= _csrf %>">
 <script src="/game/trex-game.js"></script>
