@@ -1,7 +1,7 @@
 // Definindo a pinagem dos sensores e atuadores
-#define pino_sensor     11
 #define pino_motor      9
 #define pino_led_sensor 10
+#define pino_sensor     11
 
 // Incluindo bibliotecas
 #include <Thread.h>
