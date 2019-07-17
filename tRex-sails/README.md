@@ -1,6 +1,6 @@
 # sails-trex
 
-a [Sails v1](https://sailsjs.com) application
+a [Sails v1](https://sailsjs.com) Application
 
 
 ### Links
